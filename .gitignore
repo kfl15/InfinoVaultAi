@@ -1,110 +1,28 @@
-# =========================================
-# PYTHON BACKEND IGNORE RULES
-# =========================================
-
-# Environment files
-.env
-*.env
-.env.*
-
-# Python caches
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Chroma vector DB
-backend/chroma_store/
-
-# Uploaded PDFs storage
-backend/uploaded_pdfs/
-
-# Virtual environments (you said you use external venvs—but we ignore anyway)
-venv/
-.venv/
-venv*/
-ENV/
-env/
-env.*/
-env.bak/
-
-# Python build artifacts
-build/
-dist/
-*.egg-info/
-.ipynb_checkpoints/
-
-
-# =========================================
-# ANDROID / GRADLE IGNORE RULES
-# =========================================
-
-# Gradle caches
 .gradle/
-android/.gradle/
-
-# Build outputs
-android/app/build/
-android/build/
+build/
 */build/
-*/out/
-captures/
-generated/
-outputs/
-
-# APK / AAB files
-*.apk
-*.aar
-*.aab
-*.ap_
-
-# Local config
 local.properties
 
-# Android Studio / IntelliJ project files
+.idea/
 *.iml
-.idea/
-android/.idea/
 
-# Keystores (very important)
-*.jks
-*.keystore
-*.pem
-*.p12
-
-# Misc Android
-android/app/release/
-android/app/debug/
-.android/
-.navigation/
-
-# Logs
-*.log
-
-
-# =========================================
-# IDE / EDITOR IGNORE
-# =========================================
-
-.vscode/
-.idea/
-
-
-# =========================================
-# TEMP / ROUGH / MISC
-# =========================================
-
-ROUGH/
-*.tmp
-*.temp
-
-
-# =========================================
-# OS-SPECIFIC
-# =========================================
+.kotlin/
 
 .DS_Store
 Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
+
+*.log
+
+captures/
+.externalNativeBuild/
+.cxx/
+
+*.so
+
+.codex/
+.planning/
+
+*.diff
+
+*.keystore
+*.jks
