@@ -170,7 +170,7 @@ fun ChatActivityScreenUI(
                                             .getModelFromId(currChat!!.llmModelId)
                                             ?.name ?: ""
                                     } else {
-                                        "Select a model ..."
+                                        ""
                                     },
                                     fontFamily = AppFontFamily,
                                     fontSize = 12.sp,
@@ -458,7 +458,9 @@ private fun MessageInput(viewModel: ChatScreenViewModel) {
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
                     ),
-                placeholder = { Text(text = "Ask documents...") },
+                placeholder = { Text(text = if (isGeneratingResponse || isInitializingModel) {
+                    "Loading model ..." } else { "Ask a question" }
+                ) },
                 keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
             )
             Spacer(modifier = Modifier.width(8.dp))

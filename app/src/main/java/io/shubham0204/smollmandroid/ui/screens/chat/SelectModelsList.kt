@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import io.shubham0204.smollmandroid.data.LLMModel
 import io.shubham0204.smollmandroid.ui.components.DialogTitleText
+import io.shubham0204.smollmandroid.ui.components.SmallLabelText
 import io.shubham0204.smollmandroid.ui.components.createAlertDialog
 import io.shubham0204.smollmandroid.ui.screens.model_download.DownloadModelActivity
 import io.shubham0204.smollmandroid.ui.theme.AppAccentColor
@@ -72,6 +73,8 @@ fun SelectModelsList(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             DialogTitleText(text = "Choose Model")
+            SmallLabelText("Select a downloaded model from below to use as a 'default' model for this chat. You will " +
+                    "be able to change it later by clicking ⫶ on the app bar.")
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn {
                 items(modelsList) { ModelListItem(model = it, onModelListItemClick, onModelDeleteClick, showModelDeleteIcon) }

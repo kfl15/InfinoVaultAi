@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModel
 import io.shubham0204.smollmandroid.data.LLMModel
 import io.shubham0204.smollmandroid.data.ModelsDB
 import io.shubham0204.smollmandroid.ui.components.hideProgressDialog
+import io.shubham0204.smollmandroid.ui.components.setProgressDialogText
 import io.shubham0204.smollmandroid.ui.components.setProgressDialogTitle
 import io.shubham0204.smollmandroid.ui.components.showProgressDialog
 import kotlinx.coroutines.CoroutineScope
@@ -78,6 +79,7 @@ class DownloadModelsViewModel(
         }
         if (fileName.isNotEmpty()) {
             setProgressDialogTitle("Copying model file...")
+            setProgressDialogText("$fileName\n(The model needs to be copied to the app's internal directory for use)")
             showProgressDialog()
             CoroutineScope(Dispatchers.IO).launch {
                 context.contentResolver.openInputStream(uri).use { inputStream ->

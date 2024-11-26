@@ -132,6 +132,8 @@ fun TasksList(
     enableTaskClick: Boolean,
     showTaskOptions: Boolean,
 ) {
+    SmallLabelText("Tasks are chat templates with a system prompt and model defined. Use them to perform quick " +
+            "actions with the selected SLM model.")
     LazyColumn {
         items(tasks) { task ->
             TaskItem(

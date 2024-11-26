@@ -52,6 +52,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.shubham0204.smollmandroid.ui.components.AppBarTitleText
+import io.shubham0204.smollmandroid.ui.components.SmallLabelText
 import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
 import io.shubham0204.smollmandroid.ui.theme.SmolLMAndroidTheme
 
@@ -141,6 +142,13 @@ fun EditChatSettingsScreen(
                         textStyle = TextStyle(fontFamily = AppFontFamily),
                         keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (chat.isTask) {
+                        SmallLabelText("Updates to the name and system prompt will only be reflected in the chat and " +
+                                "not in the task.")
+                    }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
