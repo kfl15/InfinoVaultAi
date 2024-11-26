@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Icon
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import io.shubham0204.smollmandroid.data.LLMModel
@@ -86,6 +88,7 @@ fun CreateTaskDialog(viewModel: TasksViewModel) {
                     onValueChange = { taskName = it },
                     label = { Text("Task Name", fontFamily = AppFontFamily) },
                     textStyle = TextStyle(fontFamily = AppFontFamily),
+                    keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -100,6 +103,7 @@ fun CreateTaskDialog(viewModel: TasksViewModel) {
                     onValueChange = { systemPrompt = it },
                     label = { Text("System Prompt", fontFamily = AppFontFamily) },
                     textStyle = TextStyle(fontFamily = AppFontFamily),
+                    keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
