@@ -47,14 +47,11 @@ void LLMInference::add_chat_message(const char *message, const char *role) {
 }
 
 void LLMInference::start_completion(const char *query) {
-    if (store_chats) {
-        add_chat_message(query, "user");
-    } else {
-        messages.clear();
-        messages.push_back({"user", strdup(query)});
+    if (!store_chats) {
         prev_len = 0;
         formatted.clear();
     }
+    add_chat_message(query, "user");
     int new_len = llama_chat_apply_template(
             model,
             nullptr,
