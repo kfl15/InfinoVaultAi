@@ -103,6 +103,8 @@ fun TasksActivityScreenUI() {
                         .padding(paddingValues),
             ) {
                 val tasks by viewModel.tasksDB.getTasks().collectAsState(emptyList())
+                SmallLabelText("Tasks are chat templates with a system prompt and model defined. Use them to perform quick " +
+                        "actions with the selected SLM model.")
                 TasksList(
                     tasks,
                     onTaskSelected = { /* Not applicable as enableTaskClick is set to `false` */ },
@@ -132,8 +134,6 @@ fun TasksList(
     enableTaskClick: Boolean,
     showTaskOptions: Boolean,
 ) {
-    SmallLabelText("Tasks are chat templates with a system prompt and model defined. Use them to perform quick " +
-            "actions with the selected SLM model.")
     LazyColumn {
         items(tasks) { task ->
             TaskItem(

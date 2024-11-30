@@ -29,12 +29,12 @@ val exampleModelsList =
             url = "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct-GGUF/resolve/main/smollm2-1.7b-instruct-q4_k_m.gguf",
         ),
         LLMModel(
-            name = "Llama 3.2 1B Instruct fp16 GGUF",
-            url = "https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-f16.gguf",
+            name = "Qwen2.5 1.5B Q8 Instruct GGUF",
+            url = "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf",
         ),
         LLMModel(
-            name = "Llama 3.2 3B Instruct Q4 GGUF",
-            url = "https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_0.gguf",
+            name = "Qwen2.5 3B Q5_K_M Instruct GGUF",
+            url = "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q5_k_m.gguf",
         ),
         LLMModel(
             name = "Qwen2.5 Coder 3B Instruct Q5 GGUF",

@@ -129,6 +129,9 @@ class ChatScreenViewModel(
         currChatState.value?.let { chat ->
             chat.dateUsed = Date()
             chatsDB.updateChat(chat)
+            if (chat.isTask) {
+                messagesDB.deleteMessages(chat.id)
+            }
             messagesDB.addUserMessage(chat.id, query)
             isGeneratingResponse.value = true
             CoroutineScope(Dispatchers.Default).launch {
