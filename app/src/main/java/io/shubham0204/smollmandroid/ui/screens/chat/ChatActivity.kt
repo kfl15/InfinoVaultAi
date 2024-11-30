@@ -156,6 +156,10 @@ fun ChatActivityScreenUI(
                         Intent(context, ManageTasksActivity::class.java).also {
                             context.startActivity(it)
                         }
+                    },
+                    onCreateTaskClick = {
+                        scope.launch { drawerState.close() }
+                        viewModel.showTaskListBottomListState.value = true
                     }
                 )
             },
@@ -185,7 +189,7 @@ fun ChatActivityScreenUI(
                         },
                         navigationIcon = {
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(Icons.Default.Menu, contentDescription = "View Chats")
+                                Icon(Icons.Default.Menu, contentDescription = "View Chats", tint = Color.DarkGray)
                             }
                         },
                         actions = {
@@ -212,7 +216,7 @@ fun ChatActivityScreenUI(
                     )
                 },
             ) { innerPadding ->
-                Column(modifier = Modifier.padding(innerPadding).background(Color.White)) {
+                Column(modifier = Modifier.padding(innerPadding).background(MaterialTheme.colorScheme.background)) {
                     if (currChat != null) {
                         ScreenUI(viewModel)
                     }
@@ -436,17 +440,9 @@ private fun MessageInput(viewModel: ChatScreenViewModel) {
                 CircularProgressIndicator(color = AppAccentColor)
             } else {
                 IconButton(
+                    enabled = questionText.isNotEmpty(),
                     modifier = Modifier.background(Color.Blue, CircleShape),
                     onClick = {
-                        if (questionText.isEmpty()) {
-                            Toast
-                                .makeText(
-                                    context,
-                                    "Please enter a question",
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            return@IconButton
-                        }
                         keyboardController?.hide()
                         viewModel.sendUserQuery(questionText)
                         questionText = ""

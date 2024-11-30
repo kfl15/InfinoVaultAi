@@ -37,8 +37,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -97,14 +100,14 @@ fun TasksActivityScreenUI() {
             Column(
                 modifier =
                     Modifier
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.background)
                         .fillMaxSize()
-                        .padding(16.dp)
                         .padding(paddingValues),
             ) {
                 val tasks by viewModel.tasksDB.getTasks().collectAsState(emptyList())
                 SmallLabelText("Tasks are chat templates with a system prompt and model defined. Use them to perform quick " +
-                        "actions with the selected SLM model.")
+                        "actions with the selected SLM model.", modifier = Modifier.padding(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 TasksList(
                     tasks,
                     onTaskSelected = { /* Not applicable as enableTaskClick is set to `false` */ },
@@ -162,7 +165,7 @@ private fun TaskItem(
             Modifier.fillMaxWidth().clickable{onTaskSelected()}
         } else {
             Modifier.fillMaxWidth()
-        },
+        }.background(Color.White),
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
     ) {
         Column(
@@ -170,8 +173,7 @@ private fun TaskItem(
                 Modifier
                     .weight(1f)
                     .padding(4.dp)
-                    .background(Color.White)
-                    .padding(8.dp),
+                    .padding(8.dp)
         ) {
             MediumLabelText(text = task.name)
             Spacer(modifier = Modifier.height(4.dp))
@@ -180,8 +182,10 @@ private fun TaskItem(
         if (showTaskOptions) {
             Box {
                 var showTaskOptionsPopup by remember { mutableStateOf(false) }
-                IconButton(onClick = { showTaskOptionsPopup = true }) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "More Options")
+                IconButton(
+                    onClick = { showTaskOptionsPopup = true },
+                    colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White)) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "More Options", tint = Color.DarkGray)
                 }
                 if (showTaskOptionsPopup) {
                     TaskOptionsPopup(

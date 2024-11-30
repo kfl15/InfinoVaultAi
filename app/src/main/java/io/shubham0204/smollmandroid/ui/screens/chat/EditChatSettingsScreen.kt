@@ -107,7 +107,7 @@ fun EditChatSettingsScreen(
                 Column(
                     modifier =
                         Modifier
-                            .background(Color.White)
+                            .background(MaterialTheme.colorScheme.background)
                             .fillMaxSize()
                             .padding(16.dp)
                             .padding(paddingValues)
