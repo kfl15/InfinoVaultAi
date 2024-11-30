@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,6 +52,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material.icons.filled.AddTask
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -59,8 +61,10 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -81,6 +85,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
@@ -88,6 +93,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.shubham0204.smollmandroid.data.Chat
 import io.shubham0204.smollmandroid.ui.components.AppBarTitleText
+import io.shubham0204.smollmandroid.ui.components.MediumLabelText
 import io.shubham0204.smollmandroid.ui.screens.manage_tasks.ManageTasksActivity
 import io.shubham0204.smollmandroid.ui.screens.manage_tasks.TasksList
 import io.shubham0204.smollmandroid.ui.theme.AppAccentColor
@@ -237,45 +243,7 @@ fun ChatActivityScreenUI(
             )
         }
 
-        var showTaskListBottomList by remember { viewModel.showTaskListBottomListState }
-        if (showTaskListBottomList) {
-            // adding bottom sheets in Compose
-            // See https://developer.android.com/develop/ui/compose/components/bottom-sheets
-            ModalBottomSheet(onDismissRequest = {
-                showTaskListBottomList = false
-            }) {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .background(Color.White, RoundedCornerShape(8.dp))
-                            .padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text("Task List")
-                    val tasks by viewModel.tasksDB.getTasks().collectAsState(emptyList())
-                    TasksList(
-                        tasks,
-                        onTaskSelected = { task ->
-                            val newChatId = viewModel.chatsDB.addChat(chatName = task.name, systemPrompt = task
-                                .systemPrompt, llmModelId = task.modelId)
-                            viewModel.switchChat(Chat(
-                                id = newChatId,
-                                name = task.name,
-                                systemPrompt = task.systemPrompt,
-                                llmModelId = task.modelId,
-                                isTask = true
-                            ))
-                            showTaskListBottomList = false
-                        },
-                        onEditTaskClick = { /* Not applicable as showTaskOptions is set to `false` */ },
-                        onDeleteTaskClick = { /* Not applicable as showTaskOptions is set to `false` */ },
-                        enableTaskClick = true,
-                        showTaskOptions = false,
-                    )
-                }
-            }
-        }
+        TasksListBottomSheet(viewModel)
     }
 }
 
@@ -490,6 +458,77 @@ private fun MessageInput(viewModel: ChatScreenViewModel) {
                         tint = Color.White,
                     )
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TasksListBottomSheet(viewModel: ChatScreenViewModel) {
+    val context = LocalContext.current
+    var showTaskListBottomList by remember { viewModel.showTaskListBottomListState }
+    if (showTaskListBottomList) {
+        // adding bottom sheets in Compose
+        // See https://developer.android.com/develop/ui/compose/components/bottom-sheets
+        ModalBottomSheet(
+            containerColor = Color.White,
+            onDismissRequest = {
+                showTaskListBottomList = false
+            }
+        ) {
+            Column(
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, RoundedCornerShape(8.dp))
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+
+                val tasks by viewModel.tasksDB.getTasks().collectAsState(emptyList())
+                if (tasks.isEmpty()) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        "No tasks created",
+                        fontFamily = AppFontFamily,
+                        modifier = Modifier.fillMaxWidth(),
+                        color = Color.DarkGray,
+                        style = MaterialTheme.typography.labelMedium,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedButton(onClick = {
+                        showTaskListBottomList = false
+                        Intent(context, ManageTasksActivity::class.java).also {
+                            context.startActivity(it)
+                        }
+                    }) { MediumLabelText("Create a task") }
+                    Spacer(modifier = Modifier.height(24.dp))
+                } else {
+                    AppBarTitleText("Select A Task")
+                    TasksList(
+                        tasks,
+                        onTaskSelected = { task ->
+                            val newChatId = viewModel.chatsDB.addChat(chatName = task.name, systemPrompt = task
+                                .systemPrompt, llmModelId = task.modelId)
+                            viewModel.switchChat(Chat(
+                                id = newChatId,
+                                name = task.name,
+                                systemPrompt = task.systemPrompt,
+                                llmModelId = task.modelId,
+                                isTask = true
+                            ))
+                            showTaskListBottomList = false
+                        },
+                        onEditTaskClick = { /* Not applicable as showTaskOptions is set to `false` */ },
+                        onDeleteTaskClick = { /* Not applicable as showTaskOptions is set to `false` */ },
+                        enableTaskClick = true,
+                        showTaskOptions = false,
+                    )
+                }
+
             }
         }
     }
