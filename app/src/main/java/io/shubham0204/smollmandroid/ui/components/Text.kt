@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
@@ -29,12 +30,14 @@ import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
 fun SmallLabelText(
     text: String,
     modifier: Modifier = Modifier,
+    textColor: Color = Color.Black,
 ) {
     Text(
         text = text,
         style = MaterialTheme.typography.labelSmall,
         fontFamily = AppFontFamily,
         modifier = modifier,
+        color = textColor,
     )
 }
 
@@ -46,6 +49,19 @@ fun MediumLabelText(
     Text(
         text = text,
         style = MaterialTheme.typography.labelMedium,
+        fontFamily = AppFontFamily,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun LargeLabelText(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
         fontFamily = AppFontFamily,
         modifier = modifier,
     )

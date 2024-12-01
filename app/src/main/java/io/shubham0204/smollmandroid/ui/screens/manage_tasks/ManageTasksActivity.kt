@@ -43,6 +43,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -58,6 +59,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import io.shubham0204.smollmandroid.data.Task
 import io.shubham0204.smollmandroid.ui.components.AppAlertDialog
 import io.shubham0204.smollmandroid.ui.components.AppBarTitleText
+import io.shubham0204.smollmandroid.ui.components.LargeLabelText
 import io.shubham0204.smollmandroid.ui.components.MediumLabelText
 import io.shubham0204.smollmandroid.ui.components.SmallLabelText
 import io.shubham0204.smollmandroid.ui.theme.SmolLMAndroidTheme
@@ -110,7 +112,10 @@ fun TasksActivityScreenUI() {
                         "actions with the selected SLM model.", modifier = Modifier.padding(16.dp))
                 Spacer(modifier = Modifier.height(8.dp))
                 TasksList(
-                    tasks,
+                    tasks.map {
+                        val modelName = viewModel.modelsRepository.getModelFromId(it.modelId)?.name ?: return@map it
+                        it.copy(modelName = modelName)
+                    },
                     onTaskSelected = { /* Not applicable as enableTaskClick is set to `false` */ },
                     onEditTaskClick = { task ->
                         viewModel.selectedTaskState.value = task
@@ -179,9 +184,11 @@ private fun TaskItem(
                     .padding(4.dp)
                     .padding(8.dp)
         ) {
-            MediumLabelText(text = task.name)
+            LargeLabelText(text = task.name)
             Spacer(modifier = Modifier.height(4.dp))
             SmallLabelText(text = task.systemPrompt)
+            Spacer(modifier = Modifier.height(2.dp))
+            SmallLabelText(text = task.modelName, textColor = Color.LightGray)
         }
         if (showTaskOptions) {
             Box {

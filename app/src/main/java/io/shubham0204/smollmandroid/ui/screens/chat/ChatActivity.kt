@@ -193,14 +193,6 @@ fun ChatActivityScreenUI(
                             }
                         },
                         actions = {
-                            IconButton(
-                                onClick = { viewModel.showTaskListBottomListState.value = true },
-                            ) {
-                                Icon(
-                                    Icons.Default.AddCircleOutline,
-                                    contentDescription = "Add New Task",
-                                )
-                            }
                             Box {
                                 IconButton(
                                     onClick = { viewModel.showMoreOptionsPopupState.value = true },
@@ -441,7 +433,7 @@ private fun MessageInput(viewModel: ChatScreenViewModel) {
             } else {
                 IconButton(
                     enabled = questionText.isNotEmpty(),
-                    modifier = Modifier.background(Color.Blue, CircleShape),
+                    modifier = Modifier.background(AppAccentColor, CircleShape),
                     onClick = {
                         keyboardController?.hide()
                         viewModel.sendUserQuery(questionText)
@@ -505,7 +497,10 @@ private fun TasksListBottomSheet(viewModel: ChatScreenViewModel) {
                 } else {
                     AppBarTitleText("Select A Task")
                     TasksList(
-                        tasks,
+                        tasks.map {
+                            val modelName = viewModel.modelsRepository.getModelFromId(it.modelId)?.name ?: return@map it
+                            it.copy(modelName = modelName)
+                        },
                         onTaskSelected = { task ->
                             val newChatId = viewModel.chatsDB.addChat(chatName = task.name, systemPrompt = task
                                 .systemPrompt, llmModelId = task.modelId)

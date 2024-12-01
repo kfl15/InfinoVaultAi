@@ -55,4 +55,5 @@ data class Task(
     var name: String = "",
     var systemPrompt: String = "",
     var modelId: Long = -1,
+    @Transient var modelName: String = ""
 )
