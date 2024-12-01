@@ -17,6 +17,8 @@
 package io.shubham0204.smollmandroid.ui.screens.manage_tasks
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,80 +46,111 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import io.shubham0204.smollmandroid.data.LLMModel
 import io.shubham0204.smollmandroid.ui.components.DialogTitleText
+import io.shubham0204.smollmandroid.ui.screens.chat.SelectModelsList
 import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
 
 @Composable
 fun EditTaskDialog(viewModel: TasksViewModel) {
     val selectedTask by remember { viewModel.selectedTaskState }
-    var taskName by remember { mutableStateOf(selectedTask?.name ?: "") }
-    var systemPrompt by remember { mutableStateOf(selectedTask?.systemPrompt ?: "") }
-    LaunchedEffect(selectedTask) {
-        taskName = selectedTask?.name ?: ""
-        systemPrompt = selectedTask?.systemPrompt ?: ""
-    }
-    var showEditTaskDialog by remember { viewModel.showEditTaskDialogState }
-    if (showEditTaskDialog && selectedTask != null) {
-        Dialog(onDismissRequest = { showEditTaskDialog = false }) {
-            Column(
-                modifier =
+    selectedTask?.let {task ->
+        var taskName by remember { mutableStateOf(task.name) }
+        var systemPrompt by remember { mutableStateOf(task.systemPrompt) }
+        var selectedModel by remember { mutableStateOf(viewModel.modelsRepository.getModelFromId(task.modelId)) }
+        var isModelListDialogVisible by remember { mutableStateOf(false) }
+        val modelsList = viewModel.modelsRepository.getAvailableModelsList()
+        LaunchedEffect(selectedTask) {
+            taskName = task.name
+            systemPrompt = task.systemPrompt
+        }
+        var showEditTaskDialog by remember { viewModel.showEditTaskDialogState }
+        if (showEditTaskDialog) {
+            Dialog(onDismissRequest = { showEditTaskDialog = false }) {
+                Column(
+                    modifier =
                     Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
                         .background(Color.White, RoundedCornerShape(8.dp))
                         .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                DialogTitleText(text = "Edit Task")
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextField(
-                    colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                        ),
-                    modifier = Modifier.fillMaxWidth(),
-                    value = taskName,
-                    onValueChange = { taskName = it },
-                    label = { Text("Task Name", fontFamily = AppFontFamily) },
-                    textStyle = TextStyle(fontFamily = AppFontFamily),
-                    keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                        ),
-                    modifier = Modifier.fillMaxWidth(),
-                    value = systemPrompt,
-                    onValueChange = { systemPrompt = it },
-                    label = { Text("System Prompt", fontFamily = AppFontFamily) },
-                    textStyle = TextStyle(fontFamily = AppFontFamily),
-                    keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                OutlinedButton(
-                    enabled = taskName.isNotBlank() && systemPrompt.isNotBlank(),
-                    onClick = {
-                        // selectedTask is never null
-                        // as we check for null in the if condition above
-                        viewModel.updateTask(
-                            selectedTask!!.copy(
-                                name = taskName,
-                                systemPrompt = systemPrompt,
-                            ),
-                        )
-                        showEditTaskDialog = false
-                    },
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Icon(Icons.Default.Done, contentDescription = "Add")
-                    Text("Add", fontFamily = AppFontFamily)
+                    DialogTitleText(text = "Edit Task")
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    TextField(
+                        colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                        value = taskName,
+                        onValueChange = { taskName = it },
+                        label = { Text("Task Name", fontFamily = AppFontFamily) },
+                        textStyle = TextStyle(fontFamily = AppFontFamily),
+                        keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextField(
+                        colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                        value = systemPrompt,
+                        onValueChange = { systemPrompt = it },
+                        label = { Text("System Prompt", fontFamily = AppFontFamily) },
+                        textStyle = TextStyle(fontFamily = AppFontFamily),
+                        keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .border(width = 1.dp, Color.DarkGray)
+                            .clickable { isModelListDialogVisible = true }
+                            .padding(8.dp),
+                        text = if (selectedModel == null) "Select Model" else selectedModel!!.name,
+                        fontFamily = AppFontFamily,
+                    )
+
+                    if (isModelListDialogVisible) {
+                        SelectModelsList(
+                            onDismissRequest = { isModelListDialogVisible = false },
+                            modelsList = modelsList,
+                            onModelListItemClick = { model ->
+                                isModelListDialogVisible = false
+                                selectedModel = model
+                            },
+                            onModelDeleteClick = { /* Not applicable, as showModelDeleteIcon is set to false */ },
+                            showModelDeleteIcon = false,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    OutlinedButton(
+                        enabled = taskName.isNotBlank() && systemPrompt.isNotBlank(),
+                        onClick = {
+                            viewModel.updateTask(
+                                task.copy(
+                                    name = taskName,
+                                    systemPrompt = systemPrompt,
+                                ),
+                            )
+                            showEditTaskDialog = false
+                        },
+                    ) {
+                        Icon(Icons.Default.Done, contentDescription = "Update")
+                        Text("Update", fontFamily = AppFontFamily)
+                    }
                 }
             }
         }

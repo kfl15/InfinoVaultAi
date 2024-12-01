@@ -54,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.shubham0204.smollmandroid.data.Task
 import io.shubham0204.smollmandroid.ui.components.AppAlertDialog
 import io.shubham0204.smollmandroid.ui.components.AppBarTitleText
@@ -111,7 +112,10 @@ fun TasksActivityScreenUI() {
                 TasksList(
                     tasks,
                     onTaskSelected = { /* Not applicable as enableTaskClick is set to `false` */ },
-                    onEditTaskClick = { task -> viewModel.showEditTaskDialogState.value = true },
+                    onEditTaskClick = { task ->
+                        viewModel.selectedTaskState.value = task
+                        viewModel.showEditTaskDialogState.value = true
+                    },
                     onDeleteTaskClick = { task ->
                         viewModel.deleteTask(task.id)
                         Toast.makeText(context, "Task '${task.name}' deleted", Toast.LENGTH_LONG).show()
