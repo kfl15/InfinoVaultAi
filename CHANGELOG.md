@@ -1,0 +1,1 @@
+This is the first alpha release of SmolChat.
