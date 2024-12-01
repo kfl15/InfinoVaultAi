@@ -39,37 +39,12 @@ fun TaskOptionsPopup(
         DropdownMenuItem(
             leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Edit Task") },
             text = { Text("Edit Task", fontFamily = AppFontFamily) },
-            onClick = {
-                onEditTaskClick()
-//                viewModel.showEditTaskDialogState.value = true
-//                expanded = false
-            },
+            onClick = { onEditTaskClick() },
         )
         DropdownMenuItem(
             leadingIcon = { Icon(Icons.Default.Delete, contentDescription = "Delete Task") },
             text = { Text("Delete Task", fontFamily = AppFontFamily) },
-            onClick = {
-                onDeleteTaskClick()
-//                viewModel.selectedTaskState.value?.let { task ->
-//                    createAlertDialog(
-//                        dialogTitle = "Delete Task",
-//                        dialogText = "Are you sure you want to delete task '${task.name}'?",
-//                        dialogPositiveButtonText = "Delete",
-//                        dialogNegativeButtonText = "Cancel",
-//                        onPositiveButtonClick = {
-//                            viewModel.deleteTask(task.id)
-//                            Toast
-//                                .makeText(
-//                                    context,
-//                                    "Task '${task.name}' deleted",
-//                                    Toast.LENGTH_LONG,
-//                                ).show()
-//                        },
-//                        onNegativeButtonClick = {},
-//                    )
-//                }
-//                expanded = false
-            },
+            onClick = { onDeleteTaskClick() },
         )
     }
 }

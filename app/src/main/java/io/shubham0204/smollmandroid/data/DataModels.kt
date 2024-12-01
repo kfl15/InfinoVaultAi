@@ -30,7 +30,7 @@ data class Chat(
     var llmModelId: Long = -1L,
     var minP: Float = 0.05f,
     var temperature: Float = 1.0f,
-    var isTask: Boolean = false
+    var isTask: Boolean = false,
 )
 
 @Entity
@@ -55,5 +55,5 @@ data class Task(
     var name: String = "",
     var systemPrompt: String = "",
     var modelId: Long = -1,
-    @Transient var modelName: String = ""
+    @Transient var modelName: String = "",
 )

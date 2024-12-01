@@ -46,7 +46,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import io.shubham0204.smollmandroid.data.LLMModel
 import io.shubham0204.smollmandroid.ui.components.DialogTitleText
 import io.shubham0204.smollmandroid.ui.screens.chat.SelectModelsList
 import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
@@ -54,10 +53,12 @@ import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
 @Composable
 fun EditTaskDialog(viewModel: TasksViewModel) {
     val selectedTask by remember { viewModel.selectedTaskState }
-    selectedTask?.let {task ->
+    selectedTask?.let { task ->
         var taskName by remember { mutableStateOf(task.name) }
         var systemPrompt by remember { mutableStateOf(task.systemPrompt) }
-        var selectedModel by remember { mutableStateOf(viewModel.modelsRepository.getModelFromId(task.modelId)) }
+        var selectedModel by remember {
+            mutableStateOf(viewModel.modelsRepository.getModelFromId(task.modelId))
+        }
         var isModelListDialogVisible by remember { mutableStateOf(false) }
         val modelsList = viewModel.modelsRepository.getAvailableModelsList()
         LaunchedEffect(selectedTask) {
@@ -69,11 +70,11 @@ fun EditTaskDialog(viewModel: TasksViewModel) {
             Dialog(onDismissRequest = { showEditTaskDialog = false }) {
                 Column(
                     modifier =
-                    Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(8.dp))
-                        .padding(16.dp),
+                        Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .background(Color.White, RoundedCornerShape(8.dp))
+                            .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     DialogTitleText(text = "Edit Task")
@@ -81,42 +82,48 @@ fun EditTaskDialog(viewModel: TasksViewModel) {
 
                     TextField(
                         colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                        ),
+                            TextFieldDefaults.colors(
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White,
+                            ),
                         modifier = Modifier.fillMaxWidth(),
                         value = taskName,
                         onValueChange = { taskName = it },
                         label = { Text("Task Name", fontFamily = AppFontFamily) },
                         textStyle = TextStyle(fontFamily = AppFontFamily),
-                        keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
+                        keyboardOptions =
+                            KeyboardOptions.Default.copy(
+                                capitalization = KeyboardCapitalization.Words,
+                            ),
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
                     TextField(
                         colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                        ),
+                            TextFieldDefaults.colors(
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White,
+                            ),
                         modifier = Modifier.fillMaxWidth(),
                         value = systemPrompt,
                         onValueChange = { systemPrompt = it },
                         label = { Text("System Prompt", fontFamily = AppFontFamily) },
                         textStyle = TextStyle(fontFamily = AppFontFamily),
-                        keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
+                        keyboardOptions =
+                            KeyboardOptions.Default.copy(
+                                capitalization = KeyboardCapitalization.Sentences,
+                            ),
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
                         modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .border(width = 1.dp, Color.DarkGray)
-                            .clickable { isModelListDialogVisible = true }
-                            .padding(8.dp),
+                            Modifier
+                                .fillMaxWidth()
+                                .border(width = 1.dp, Color.DarkGray)
+                                .clickable { isModelListDialogVisible = true }
+                                .padding(8.dp),
                         text = if (selectedModel == null) "Select Model" else selectedModel!!.name,
                         fontFamily = AppFontFamily,
                     )
@@ -129,7 +136,8 @@ fun EditTaskDialog(viewModel: TasksViewModel) {
                                 isModelListDialogVisible = false
                                 selectedModel = model
                             },
-                            onModelDeleteClick = { /* Not applicable, as showModelDeleteIcon is set to false */ },
+                            onModelDeleteClick = { // Not applicable, as showModelDeleteIcon is set to false
+                            },
                             showModelDeleteIcon = false,
                         )
                     }

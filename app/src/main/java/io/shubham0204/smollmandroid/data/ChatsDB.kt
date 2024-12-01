@@ -29,6 +29,7 @@ import java.util.Date
 class ChatsDB {
     private val chatsBox = ObjectBoxStore.store.boxFor(Chat::class.java)
 
+    /** Get all chats from the database sorted by dateUsed in descending order. */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getChats(): Flow<List<Chat>> =
         chatsBox
@@ -37,8 +38,6 @@ class ChatsDB {
             .build()
             .flow()
             .flowOn(Dispatchers.IO)
-
-    fun getChatFromId(chatId: Long): Chat? = chatsBox.get(chatId)
 
     fun loadDefaultChat(): Chat {
         val defaultChat =
@@ -54,6 +53,10 @@ class ChatsDB {
         return defaultChat
     }
 
+    /**
+     * Get the most recently used chat from the database. This function might return null, if there
+     * are no chats in the database.
+     */
     fun getRecentlyUsedChat(): Chat? =
         chatsBox
             .query()
@@ -64,9 +67,9 @@ class ChatsDB {
     fun addChat(
         chatName: String,
         systemPrompt: String = "You are a helpful assistant.",
-        llmModelId: Long = -1
-    ): Long {
-        return chatsBox.put(
+        llmModelId: Long = -1,
+    ): Long =
+        chatsBox.put(
             Chat(
                 name = chatName,
                 systemPrompt = systemPrompt,
@@ -75,8 +78,8 @@ class ChatsDB {
                 llmModelId = llmModelId,
             ),
         )
-    }
 
+    /** Update the chat in the database. ObjectBox overwrites the entry if it already exists. */
     fun updateChat(modifiedChat: Chat) {
         chatsBox.put(modifiedChat)
     }

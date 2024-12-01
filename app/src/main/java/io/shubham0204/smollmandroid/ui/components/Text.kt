@@ -91,6 +91,6 @@ fun AppBarTitleText(
         style = MaterialTheme.typography.titleMedium,
         fontFamily = AppFontFamily,
         modifier = modifier,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     )
 }

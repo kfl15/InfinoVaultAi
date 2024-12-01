@@ -31,6 +31,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Redirect user to the DownloadModelActivity if no models are available
+        // as the app requires at least one model to function
         if (modelsRepository.getAvailableModelsList().isEmpty()) {
             Intent(this, DownloadModelActivity::class.java).apply {
                 startActivity(this)

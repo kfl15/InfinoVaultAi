@@ -51,7 +51,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.shubham0204.smollmandroid.data.Chat
@@ -64,11 +63,12 @@ fun DrawerUI(
     viewModel: ChatScreenViewModel,
     onItemClick: (Chat) -> Unit,
     onManageTasksClick: () -> Unit,
-    onCreateTaskClick: () -> Unit
+    onCreateTaskClick: () -> Unit,
 ) {
     Column(
         modifier =
-            Modifier.background(MaterialTheme.colorScheme.background.copy(alpha = 0.95f))
+            Modifier
+                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.95f))
                 .windowInsetsPadding(WindowInsets.safeContent)
                 .padding(8.dp)
                 .requiredWidth(300.dp)
@@ -79,7 +79,8 @@ fun DrawerUI(
                 colors = ButtonDefaults.buttonColors(containerColor = AppAccentColor),
                 onClick = {
                     val chatCount = viewModel.chatsDB.getChatsCount()
-                    val newChatId = viewModel.chatsDB.addChat(chatName = "Untitled ${chatCount + 1}")
+                    val newChatId =
+                        viewModel.chatsDB.addChat(chatName = "Untitled ${chatCount + 1}")
                     onItemClick(Chat(id = newChatId, name = "Untitled ${chatCount + 1}"))
                 },
             ) {
@@ -97,14 +98,16 @@ fun DrawerUI(
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth().clickable { onManageTasksClick() },
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(Icons.Default.AddTask, contentDescription = "Manage Tasks", tint = AppAccentColor)
+            Icon(
+                Icons.Default.AddTask,
+                contentDescription = "Manage Tasks",
+                tint = AppAccentColor,
+            )
             Text(
                 "Manage Tasks",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 fontFamily = AppFontFamily,
             )
         }
@@ -137,7 +140,8 @@ private fun LazyItemScope.ChatListItem(
 ) {
     Row(
         modifier =
-            Modifier.fillMaxWidth()
+            Modifier
+                .fillMaxWidth()
                 .padding(4.dp)
                 .background(Color.White, RoundedCornerShape(8.dp))
                 .padding(8.dp)

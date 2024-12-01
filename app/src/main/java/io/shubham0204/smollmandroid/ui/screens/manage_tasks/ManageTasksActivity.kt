@@ -37,13 +37,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,13 +53,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import io.shubham0204.smollmandroid.data.Task
 import io.shubham0204.smollmandroid.ui.components.AppAlertDialog
 import io.shubham0204.smollmandroid.ui.components.AppBarTitleText
 import io.shubham0204.smollmandroid.ui.components.LargeLabelText
-import io.shubham0204.smollmandroid.ui.components.MediumLabelText
 import io.shubham0204.smollmandroid.ui.components.SmallLabelText
+import io.shubham0204.smollmandroid.ui.components.createAlertDialog
 import io.shubham0204.smollmandroid.ui.theme.SmolLMAndroidTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -108,12 +105,17 @@ fun TasksActivityScreenUI() {
                         .padding(paddingValues),
             ) {
                 val tasks by viewModel.tasksDB.getTasks().collectAsState(emptyList())
-                SmallLabelText("Tasks are chat templates with a system prompt and model defined. Use them to perform quick " +
-                        "actions with the selected SLM model.", modifier = Modifier.padding(16.dp))
+                SmallLabelText(
+                    "Tasks are chat templates with a system prompt and model defined. Use them to perform quick " +
+                        "actions with the selected SLM model.",
+                    modifier = Modifier.padding(16.dp),
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 TasksList(
                     tasks.map {
-                        val modelName = viewModel.modelsRepository.getModelFromId(it.modelId)?.name ?: return@map it
+                        val modelName =
+                            viewModel.modelsRepository.getModelFromId(it.modelId)?.name
+                                ?: return@map it
                         it.copy(modelName = modelName)
                     },
                     onTaskSelected = { /* Not applicable as enableTaskClick is set to `false` */ },
@@ -122,8 +124,22 @@ fun TasksActivityScreenUI() {
                         viewModel.showEditTaskDialogState.value = true
                     },
                     onDeleteTaskClick = { task ->
-                        viewModel.deleteTask(task.id)
-                        Toast.makeText(context, "Task '${task.name}' deleted", Toast.LENGTH_LONG).show()
+                        createAlertDialog(
+                            dialogTitle = "Delete Task",
+                            dialogText = "Are you sure you want to delete task '${task.name}'?",
+                            dialogPositiveButtonText = "Delete",
+                            dialogNegativeButtonText = "Cancel",
+                            onPositiveButtonClick = {
+                                viewModel.deleteTask(task.id)
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "Task '${task.name}' deleted",
+                                        Toast.LENGTH_LONG,
+                                    ).show()
+                            },
+                            onNegativeButtonClick = {},
+                        )
                     },
                     enableTaskClick = false,
                     showTaskOptions = true,
@@ -170,20 +186,15 @@ private fun TaskItem(
     showTaskOptions: Boolean = true,
 ) {
     Row(
-        modifier = if (enableTaskClick) {
-            Modifier.fillMaxWidth().clickable{onTaskSelected()}
-        } else {
-            Modifier.fillMaxWidth()
-        }.background(Color.White),
+        modifier =
+            if (enableTaskClick) {
+                Modifier.fillMaxWidth().clickable { onTaskSelected() }
+            } else {
+                Modifier.fillMaxWidth()
+            }.background(Color.White),
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(4.dp)
-                    .padding(8.dp)
-        ) {
+        Column(modifier = Modifier.weight(1f).padding(4.dp).padding(8.dp)) {
             LargeLabelText(text = task.name)
             Spacer(modifier = Modifier.height(4.dp))
             SmallLabelText(text = task.systemPrompt)
@@ -195,8 +206,13 @@ private fun TaskItem(
                 var showTaskOptionsPopup by remember { mutableStateOf(false) }
                 IconButton(
                     onClick = { showTaskOptionsPopup = true },
-                    colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White)) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "More Options", tint = Color.DarkGray)
+                    colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White),
+                ) {
+                    Icon(
+                        Icons.Default.MoreVert,
+                        contentDescription = "More Options",
+                        tint = Color.DarkGray,
+                    )
                 }
                 if (showTaskOptionsPopup) {
                     TaskOptionsPopup(

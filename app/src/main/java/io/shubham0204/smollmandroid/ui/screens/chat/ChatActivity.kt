@@ -39,7 +39,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,8 +50,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.AddTask
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -116,14 +113,16 @@ class ChatActivity : ComponentActivity() {
                 exitTransition = { fadeOut() },
             ) {
                 composable("edit-chat") {
-                    EditChatSettingsScreen(viewModel, onBackClicked = {
-                        navController.navigateUp()
-                    })
+                    EditChatSettingsScreen(
+                        viewModel,
+                        onBackClicked = { navController.navigateUp() },
+                    )
                 }
                 composable("chat") {
-                    ChatActivityScreenUI(viewModel, onEditChatParamsClick = {
-                        navController.navigate("edit-chat")
-                    })
+                    ChatActivityScreenUI(
+                        viewModel,
+                        onEditChatParamsClick = { navController.navigate("edit-chat") },
+                    )
                 }
             }
         }
@@ -160,7 +159,7 @@ fun ChatActivityScreenUI(
                     onCreateTaskClick = {
                         scope.launch { drawerState.close() }
                         viewModel.showTaskListBottomListState.value = true
-                    }
+                    },
                 )
             },
         ) {
@@ -189,7 +188,11 @@ fun ChatActivityScreenUI(
                         },
                         navigationIcon = {
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(Icons.Default.Menu, contentDescription = "View Chats", tint = Color.DarkGray)
+                                Icon(
+                                    Icons.Default.Menu,
+                                    contentDescription = "View Chats",
+                                    tint = Color.DarkGray,
+                                )
                             }
                         },
                         actions = {
@@ -208,7 +211,12 @@ fun ChatActivityScreenUI(
                     )
                 },
             ) { innerPadding ->
-                Column(modifier = Modifier.padding(innerPadding).background(MaterialTheme.colorScheme.background)) {
+                Column(
+                    modifier =
+                        Modifier
+                            .padding(innerPadding)
+                            .background(MaterialTheme.colorScheme.background),
+                ) {
                     if (currChat != null) {
                         ScreenUI(viewModel)
                     }
@@ -218,7 +226,8 @@ fun ChatActivityScreenUI(
 
         var showSelectModelsListDialog by remember { viewModel.showSelectModelListDialogState }
         if (showSelectModelsListDialog) {
-            val modelsList by viewModel.modelsRepository.getAvailableModels().collectAsState(emptyList())
+            val modelsList by
+                viewModel.modelsRepository.getAvailableModels().collectAsState(emptyList())
             SelectModelsList(
                 onDismissRequest = {},
                 modelsList,
@@ -422,10 +431,18 @@ private fun MessageInput(viewModel: ChatScreenViewModel) {
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
                     ),
-                placeholder = { Text(text = if (isGeneratingResponse || isInitializingModel) {
-                    "Loading model ..." } else { "Ask a question" }
-                ) },
-                keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
+                placeholder = {
+                    Text(
+                        text =
+                            if (isGeneratingResponse || isInitializingModel) {
+                                "Loading model ..."
+                            } else {
+                                "Ask a question"
+                            },
+                    )
+                },
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences),
             )
             Spacer(modifier = Modifier.width(8.dp))
             if (isGeneratingResponse || isInitializingModel) {
@@ -461,20 +478,17 @@ private fun TasksListBottomSheet(viewModel: ChatScreenViewModel) {
         // See https://developer.android.com/develop/ui/compose/components/bottom-sheets
         ModalBottomSheet(
             containerColor = Color.White,
-            onDismissRequest = {
-                showTaskListBottomList = false
-            }
+            onDismissRequest = { showTaskListBottomList = false },
         ) {
             Column(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(8.dp))
-                    .padding(8.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .background(Color.White, RoundedCornerShape(8.dp))
+                        .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
-
                 val tasks by viewModel.tasksDB.getTasks().collectAsState(emptyList())
                 if (tasks.isEmpty()) {
                     Spacer(modifier = Modifier.height(24.dp))
@@ -484,42 +498,55 @@ private fun TasksListBottomSheet(viewModel: ChatScreenViewModel) {
                         modifier = Modifier.fillMaxWidth(),
                         color = Color.DarkGray,
                         style = MaterialTheme.typography.labelMedium,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedButton(onClick = {
-                        showTaskListBottomList = false
-                        Intent(context, ManageTasksActivity::class.java).also {
-                            context.startActivity(it)
-                        }
-                    }) { MediumLabelText("Create a task") }
+                    OutlinedButton(
+                        onClick = {
+                            showTaskListBottomList = false
+                            Intent(context, ManageTasksActivity::class.java).also {
+                                context.startActivity(it)
+                            }
+                        },
+                    ) {
+                        MediumLabelText("Create a task")
+                    }
                     Spacer(modifier = Modifier.height(24.dp))
                 } else {
                     AppBarTitleText("Select A Task")
                     TasksList(
                         tasks.map {
-                            val modelName = viewModel.modelsRepository.getModelFromId(it.modelId)?.name ?: return@map it
+                            val modelName =
+                                viewModel.modelsRepository.getModelFromId(it.modelId)?.name
+                                    ?: return@map it
                             it.copy(modelName = modelName)
                         },
                         onTaskSelected = { task ->
-                            val newChatId = viewModel.chatsDB.addChat(chatName = task.name, systemPrompt = task
-                                .systemPrompt, llmModelId = task.modelId)
-                            viewModel.switchChat(Chat(
-                                id = newChatId,
-                                name = task.name,
-                                systemPrompt = task.systemPrompt,
-                                llmModelId = task.modelId,
-                                isTask = true
-                            ))
+                            val newChatId =
+                                viewModel.chatsDB.addChat(
+                                    chatName = task.name,
+                                    systemPrompt = task.systemPrompt,
+                                    llmModelId = task.modelId,
+                                )
+                            viewModel.switchChat(
+                                Chat(
+                                    id = newChatId,
+                                    name = task.name,
+                                    systemPrompt = task.systemPrompt,
+                                    llmModelId = task.modelId,
+                                    isTask = true,
+                                ),
+                            )
                             showTaskListBottomList = false
                         },
-                        onEditTaskClick = { /* Not applicable as showTaskOptions is set to `false` */ },
-                        onDeleteTaskClick = { /* Not applicable as showTaskOptions is set to `false` */ },
+                        onEditTaskClick = { // Not applicable as showTaskOptions is set to `false`
+                        },
+                        onDeleteTaskClick = { // Not applicable as showTaskOptions is set to `false`
+                        },
                         enableTaskClick = true,
                         showTaskOptions = false,
                     )
                 }
-
             }
         }
     }

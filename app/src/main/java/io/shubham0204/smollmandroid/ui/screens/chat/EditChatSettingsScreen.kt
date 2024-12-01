@@ -49,7 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.shubham0204.smollmandroid.ui.components.AppBarTitleText
 import io.shubham0204.smollmandroid.ui.components.SmallLabelText
@@ -124,7 +123,10 @@ fun EditChatSettingsScreen(
                         onValueChange = { chatName = it },
                         label = { Text("Chat Name", fontFamily = AppFontFamily) },
                         textStyle = TextStyle(fontFamily = AppFontFamily),
-                        keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
+                        keyboardOptions =
+                            KeyboardOptions.Default.copy(
+                                capitalization = KeyboardCapitalization.Words,
+                            ),
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -140,14 +142,19 @@ fun EditChatSettingsScreen(
                         onValueChange = { systemPrompt = it },
                         label = { Text("System Prompt", fontFamily = AppFontFamily) },
                         textStyle = TextStyle(fontFamily = AppFontFamily),
-                        keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
+                        keyboardOptions =
+                            KeyboardOptions.Default.copy(
+                                capitalization = KeyboardCapitalization.Sentences,
+                            ),
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     if (chat.isTask) {
-                        SmallLabelText("Updates to the name and system prompt will only be reflected in the chat and " +
-                                "not in the task.")
+                        SmallLabelText(
+                            "Updates to the name and system prompt will only be reflected in the chat and " +
+                                "not in the task.",
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))

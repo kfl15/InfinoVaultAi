@@ -161,6 +161,11 @@ class ChatScreenViewModel(
         }
     }
 
+    /**
+     * Load the model for the current chat. If chat is configured with a LLM (i.e. chat.llModelId !=
+     * -1), then load the model. If not, show the model list dialog. Once the model is finalized,
+     * read the system prompt and user messages from the database and add them to the model.
+     */
     fun loadModel() {
         currChatState.value?.let { chat ->
             if (chat.llmModelId == -1L) {

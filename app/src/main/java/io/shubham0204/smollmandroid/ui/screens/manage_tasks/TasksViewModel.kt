@@ -28,7 +28,6 @@ class TasksViewModel(
     val modelsRepository: ModelsRepository,
     val tasksDB: TasksDB,
 ) : ViewModel() {
-    val showTaskOptionsPopupState = mutableStateOf(false)
     val showCreateTaskDialogState = mutableStateOf(false)
     val showEditTaskDialogState = mutableStateOf(false)
     val selectedTaskState = mutableStateOf<Task?>(null)

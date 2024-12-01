@@ -88,7 +88,8 @@ fun CreateTaskDialog(viewModel: TasksViewModel) {
                     onValueChange = { taskName = it },
                     label = { Text("Task Name", fontFamily = AppFontFamily) },
                     textStyle = TextStyle(fontFamily = AppFontFamily),
-                    keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words)
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Words),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -103,7 +104,10 @@ fun CreateTaskDialog(viewModel: TasksViewModel) {
                     onValueChange = { systemPrompt = it },
                     label = { Text("System Prompt", fontFamily = AppFontFamily) },
                     textStyle = TextStyle(fontFamily = AppFontFamily),
-                    keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences)
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            capitalization = KeyboardCapitalization.Sentences,
+                        ),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -127,7 +131,8 @@ fun CreateTaskDialog(viewModel: TasksViewModel) {
                             isModelListDialogVisible = false
                             selectedModel = model
                         },
-                        onModelDeleteClick = { /* Not applicable, as showModelDeleteIcon is set to false */ },
+                        onModelDeleteClick = { // Not applicable, as showModelDeleteIcon is set to false
+                        },
                         showModelDeleteIcon = false,
                     )
                 }
@@ -135,7 +140,8 @@ fun CreateTaskDialog(viewModel: TasksViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedButton(
-                    enabled = taskName.isNotBlank() && systemPrompt.isNotBlank() && selectedModel != null,
+                    enabled =
+                        taskName.isNotBlank() && systemPrompt.isNotBlank() && selectedModel != null,
                     onClick = {
                         viewModel.addTask(
                             name = taskName,

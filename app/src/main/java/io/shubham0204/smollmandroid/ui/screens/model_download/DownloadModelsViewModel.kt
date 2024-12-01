@@ -48,7 +48,8 @@ class DownloadModelsViewModel(
     val selectedModelState = mutableStateOf<LLMModel?>(null)
     val modelUrlState = mutableStateOf("")
 
-    private val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    private val downloadManager =
+        context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
     fun downloadModel() {
         // Downloading files in Android with the DownloadManager API
@@ -59,14 +60,22 @@ class DownloadModelsViewModel(
             DownloadManager
                 .Request(modelUrl.toUri())
                 .setTitle(fileName)
-                .setDescription("The GGUF model will be downloaded on your device for use with SmolChat.")
-                .setMimeType("application/octet-stream")
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                .setDescription(
+                    "The GGUF model will be downloaded on your device for use with SmolChat.",
+                ).setMimeType("application/octet-stream")
+                .setAllowedNetworkTypes(
+                    DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE,
+                ).setNotificationVisibility(
+                    DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED,
+                ).setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
         downloadManager.enqueue(request)
     }
 
+    /**
+     * Given the model file URI, copy the model file to the app's internal directory. Once copied,
+     * add a new LLMModel entity with modelName=fileName where fileName is the name of the model
+     * file.
+     */
     fun copyModelFile(
         uri: Uri,
         onComplete: () -> Unit,
@@ -79,7 +88,9 @@ class DownloadModelsViewModel(
         }
         if (fileName.isNotEmpty()) {
             setProgressDialogTitle("Copying model file...")
-            setProgressDialogText("$fileName\n(The model needs to be copied to the app's internal directory for use)")
+            setProgressDialogText(
+                "$fileName\n(The model needs to be copied to the app's internal directory for use)",
+            )
             showProgressDialog()
             CoroutineScope(Dispatchers.IO).launch {
                 context.contentResolver.openInputStream(uri).use { inputStream ->

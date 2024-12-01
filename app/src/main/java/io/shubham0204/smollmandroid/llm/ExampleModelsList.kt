@@ -18,26 +18,35 @@ package io.shubham0204.smollmandroid.llm
 
 import io.shubham0204.smollmandroid.data.LLMModel
 
+/**
+ * A list of models that are shown in the DownloadModelActivity for the user to quickly get started
+ * by downloading a model.
+ */
 val exampleModelsList =
     listOf(
         LLMModel(
             name = "SmolLM2 360M Instruct GGUF",
-            url = "https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct-GGUF/resolve/main/smollm2-360m-instruct-q8_0.gguf",
+            url =
+                "https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct-GGUF/resolve/main/smollm2-360m-instruct-q8_0.gguf",
         ),
         LLMModel(
             name = "SmolLM2 1.7B Instruct GGUF",
-            url = "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct-GGUF/resolve/main/smollm2-1.7b-instruct-q4_k_m.gguf",
+            url =
+                "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct-GGUF/resolve/main/smollm2-1.7b-instruct-q4_k_m.gguf",
         ),
         LLMModel(
             name = "Qwen2.5 1.5B Q8 Instruct GGUF",
-            url = "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf",
+            url =
+                "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf",
         ),
         LLMModel(
             name = "Qwen2.5 3B Q5_K_M Instruct GGUF",
-            url = "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q5_k_m.gguf",
+            url =
+                "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q5_k_m.gguf",
         ),
         LLMModel(
             name = "Qwen2.5 Coder 3B Instruct Q5 GGUF",
-            url = "https://huggingface.co/Qwen/Qwen2.5-Coder-3B-Instruct-GGUF/resolve/main/qwen2.5-coder-3b-instruct-q5_0.gguf",
+            url =
+                "https://huggingface.co/Qwen/Qwen2.5-Coder-3B-Instruct-GGUF/resolve/main/qwen2.5-coder-3b-instruct-q5_0.gguf",
         ),
     )

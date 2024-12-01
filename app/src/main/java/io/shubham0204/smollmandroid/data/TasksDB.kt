@@ -27,8 +27,6 @@ import org.koin.core.annotation.Single
 class TasksDB {
     private val tasksBox = ObjectBoxStore.store.boxFor(Task::class.java)
 
-    fun getTasksList(): List<Task> = tasksBox.all
-
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getTasks(): Flow<List<Task>> =
         tasksBox

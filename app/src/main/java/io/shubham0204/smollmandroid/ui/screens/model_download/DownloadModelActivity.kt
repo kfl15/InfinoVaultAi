@@ -58,7 +58,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -94,7 +93,6 @@ class DownloadModelActivity : ComponentActivity() {
     @Composable
     private fun DownloadModelScreen() {
         val viewModel: DownloadModelsViewModel = koinViewModel()
-        val context = LocalContext.current
 
         val launcher =
             rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->

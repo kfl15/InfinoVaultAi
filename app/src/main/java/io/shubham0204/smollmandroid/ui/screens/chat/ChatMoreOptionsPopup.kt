@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import io.shubham0204.smollmandroid.ui.components.createAlertDialog
 import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
 
@@ -39,7 +38,6 @@ fun ChatMoreOptionsPopup(
     onEditChatSettingsClick: () -> Unit,
 ) {
     var expanded by remember { viewModel.showMoreOptionsPopupState }
-    val context = LocalContext.current
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = { expanded = false },

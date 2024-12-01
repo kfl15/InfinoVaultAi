@@ -36,7 +36,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,11 +72,20 @@ fun SelectModelsList(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             DialogTitleText(text = "Choose Model")
-            SmallLabelText("Select a downloaded model from below to use as a 'default' model for this chat. You will " +
-                    "be able to change it later by clicking ⫶ on the app bar.")
+            SmallLabelText(
+                "Select a downloaded model from below to use as a 'default' model for this chat. You will " +
+                    "be able to change it later by clicking ⫶ on the app bar.",
+            )
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn {
-                items(modelsList) { ModelListItem(model = it, onModelListItemClick, onModelDeleteClick, showModelDeleteIcon) }
+                items(modelsList) {
+                    ModelListItem(
+                        model = it,
+                        onModelListItemClick,
+                        onModelDeleteClick,
+                        showModelDeleteIcon,
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedButton(
@@ -103,11 +111,7 @@ private fun ModelListItem(
     showModelDeleteIcon: Boolean,
 ) {
     Row(
-        modifier =
-            Modifier
-                .clickable {
-                    onModelListItemClick(model)
-                }.fillMaxWidth(),
+        modifier = Modifier.clickable { onModelListItemClick(model) }.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -115,24 +119,29 @@ private fun ModelListItem(
             Text(
                 text = "%.1f GB".format(File(model.path).length() / (1e+9)),
                 fontSize = 10.sp,
-                fontFamily =
-                AppFontFamily,
+                fontFamily = AppFontFamily,
                 maxLines = 1,
             )
         }
         if (showModelDeleteIcon) {
-            IconButton(onClick = {
-                createAlertDialog(
-                    dialogTitle = "Delete Model",
-                    dialogText = "Are you sure you want to delete the model '${model.name}'?",
-                    dialogPositiveButtonText = "Delete",
-                    dialogNegativeButtonText = "Cancel",
-                    onPositiveButtonClick = {
-                        onModelDeleteClick(model)
-                    },
-                    onNegativeButtonClick = {},
+            IconButton(
+                onClick = {
+                    createAlertDialog(
+                        dialogTitle = "Delete Model",
+                        dialogText = "Are you sure you want to delete the model '${model.name}'?",
+                        dialogPositiveButtonText = "Delete",
+                        dialogNegativeButtonText = "Cancel",
+                        onPositiveButtonClick = { onModelDeleteClick(model) },
+                        onNegativeButtonClick = {},
+                    )
+                },
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete Model",
+                    tint = AppAccentColor,
                 )
-            }) { Icon(Icons.Default.Delete, contentDescription = "Delete Model", tint = AppAccentColor) }
+            }
         }
     }
 }

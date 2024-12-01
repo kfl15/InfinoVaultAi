@@ -34,7 +34,7 @@ class SmolLM {
         modelPath: String,
         minP: Float,
         temperature: Float,
-        storeChats: Boolean
+        storeChats: Boolean,
     ) = withContext(Dispatchers.IO) {
         nativePtr = loadModel(modelPath, minP, temperature, storeChats)
     }
@@ -74,7 +74,7 @@ class SmolLM {
         modelPath: String,
         minP: Float,
         temperature: Float,
-        storeChats: Boolean
+        storeChats: Boolean,
     ): Long
 
     private external fun addChatMessage(

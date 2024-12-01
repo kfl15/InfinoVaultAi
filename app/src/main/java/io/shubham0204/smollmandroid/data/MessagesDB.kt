@@ -35,11 +35,7 @@ class MessagesDB {
             .flow()
             .flowOn(Dispatchers.IO)
 
-    fun getMessagesForModel(chatId: Long): List<ChatMessage> =
-        messagesBox
-            .query(ChatMessage_.chatId.equal(chatId))
-            .build()
-            .find()
+    fun getMessagesForModel(chatId: Long): List<ChatMessage> = messagesBox.query(ChatMessage_.chatId.equal(chatId)).build().find()
 
     fun addUserMessage(
         chatId: Long,

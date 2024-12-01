@@ -61,14 +61,17 @@ fun AppProgressDialog() {
                 ) {
                     Text(text = progressDialogTitle.value, fontFamily = AppFontFamily)
                     Spacer(modifier = Modifier.padding(4.dp))
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = AppAccentColor)
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = AppAccentColor,
+                    )
                     Spacer(modifier = Modifier.padding(4.dp))
                     Text(
                         text = progressDialogText.value,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         fontFamily = AppFontFamily,
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.labelSmall,
                     )
                 }
             }
