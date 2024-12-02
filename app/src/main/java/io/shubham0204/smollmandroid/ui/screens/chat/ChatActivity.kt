@@ -229,7 +229,7 @@ fun ChatActivityScreenUI(
             val modelsList by
                 viewModel.modelsRepository.getAvailableModels().collectAsState(emptyList())
             SelectModelsList(
-                onDismissRequest = {},
+                onDismissRequest = { showSelectModelsListDialog = false },
                 modelsList,
                 onModelListItemClick = { model ->
                     viewModel.updateChatLLM(model.id)
