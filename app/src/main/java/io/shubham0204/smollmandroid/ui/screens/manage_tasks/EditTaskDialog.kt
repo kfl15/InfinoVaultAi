@@ -147,12 +147,16 @@ fun EditTaskDialog(viewModel: TasksViewModel) {
                     OutlinedButton(
                         enabled = taskName.isNotBlank() && systemPrompt.isNotBlank(),
                         onClick = {
-                            viewModel.updateTask(
-                                task.copy(
-                                    name = taskName,
-                                    systemPrompt = systemPrompt,
-                                ),
-                            )
+                            selectedModel?.let { model ->
+                                viewModel.updateTask(
+                                    task.copy(
+                                        name = taskName,
+                                        systemPrompt = systemPrompt,
+                                        modelId = model.id,
+                                        modelName = model.name,
+                                    ),
+                                )
+                            }
                             showEditTaskDialog = false
                         },
                     ) {
