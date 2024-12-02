@@ -53,6 +53,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -448,7 +449,14 @@ private fun MessageInput(viewModel: ChatScreenViewModel) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             if (isGeneratingResponse || isInitializingModel) {
-                CircularProgressIndicator(color = AppAccentColor)
+                Box(contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = AppAccentColor)
+                    if (isGeneratingResponse) {
+                        IconButton(onClick = { viewModel.stopGeneration() }) {
+                            Icon(Icons.Default.Stop, contentDescription = "Stop", tint = Color.DarkGray)
+                        }
+                    }
+                }
             } else {
                 IconButton(
                     enabled = questionText.isNotEmpty(),

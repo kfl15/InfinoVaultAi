@@ -41,6 +41,7 @@ import io.shubham0204.smollmandroid.llm.ModelsRepository
 import io.shubham0204.smollmandroid.prism4j.PrismGrammarLocator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -70,6 +71,7 @@ class ChatScreenViewModel(
     val showTaskListBottomListState = mutableStateOf(false)
 
     val isInitializingModel = mutableStateOf(false)
+    var responseGenerationJob: Job? = null
 
     val markwon: Markwon
 
@@ -134,20 +136,32 @@ class ChatScreenViewModel(
             }
             messagesDB.addUserMessage(chat.id, query)
             isGeneratingResponse.value = true
-            CoroutineScope(Dispatchers.Default).launch {
-                partialResponse.value = ""
-                smolLM.getResponse(query).collect { partialResponse.value += it }
-                messagesDB.addAssistantMessage(chat.id, partialResponse.value)
-                withContext(Dispatchers.Main) { isGeneratingResponse.value = false }
+            responseGenerationJob =
+                CoroutineScope(Dispatchers.Default).launch {
+                    partialResponse.value = ""
+                    smolLM.getResponse(query).collect { partialResponse.value += it }
+                    messagesDB.addAssistantMessage(chat.id, partialResponse.value)
+                    withContext(Dispatchers.Main) { isGeneratingResponse.value = false }
+                }
+        }
+    }
+
+    fun stopGeneration() {
+        isGeneratingResponse.value = false
+        responseGenerationJob?.let { job ->
+            if (job.isActive) {
+                job.cancel()
             }
         }
     }
 
     fun switchChat(chat: Chat) {
+        stopGeneration()
         currChatState.value = chat
     }
 
     fun deleteChat(chat: Chat) {
+        stopGeneration()
         chatsDB.deleteChat(chat)
         messagesDB.deleteMessages(chat.id)
         currChatState.value = null
