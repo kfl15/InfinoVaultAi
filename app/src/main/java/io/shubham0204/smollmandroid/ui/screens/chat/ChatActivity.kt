@@ -196,16 +196,18 @@ fun ChatActivityScreenUI(
                             }
                         },
                         actions = {
-                            Box {
-                                IconButton(
-                                    onClick = { viewModel.showMoreOptionsPopupState.value = true },
-                                ) {
-                                    Icon(
-                                        Icons.Default.MoreVert,
-                                        contentDescription = "Options",
-                                    )
+                            if (currChat != null) {
+                                Box {
+                                    IconButton(
+                                        onClick = { viewModel.showMoreOptionsPopupState.value = true },
+                                    ) {
+                                        Icon(
+                                            Icons.Default.MoreVert,
+                                            contentDescription = "Options",
+                                        )
+                                    }
+                                    ChatMoreOptionsPopup(viewModel, onEditChatParamsClick)
                                 }
-                                ChatMoreOptionsPopup(viewModel, onEditChatParamsClick)
                             }
                         },
                     )
