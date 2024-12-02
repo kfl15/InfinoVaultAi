@@ -81,7 +81,7 @@ fun DrawerUI(
                     val chatCount = viewModel.chatsDB.getChatsCount()
                     val newChatId =
                         viewModel.chatsDB.addChat(chatName = "Untitled ${chatCount + 1}")
-                    onItemClick(Chat(id = newChatId, name = "Untitled ${chatCount + 1}"))
+                    onItemClick(Chat(id = newChatId, name = "Untitled ${chatCount + 1}", systemPrompt = "You are a helpful assistant."))
                 },
             ) {
                 Icon(Icons.Default.Add, contentDescription = "New Chat")
