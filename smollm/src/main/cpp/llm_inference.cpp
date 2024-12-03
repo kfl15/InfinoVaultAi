@@ -39,6 +39,7 @@ void LLMInference::load_model(const char *model_path, float min_p, float tempera
     llama_sampler_chain_add(sampler, llama_sampler_init_dist(LLAMA_DEFAULT_SEED));
 
     formatted = std::vector<char>(llama_n_ctx(ctx));
+    messages.clear();
     this->store_chats = store_chats;
 }
 
