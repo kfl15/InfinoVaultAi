@@ -19,10 +19,13 @@ class LLMInference {
     std::string response;
     std::vector<llama_chat_message> messages;
     llama_token curr_token;
+    std::string cache_response_tokens;
 
     std::vector<char> formatted;
     int prev_len = 0;
     bool store_chats;
+
+    bool is_valid_utf8(const char* response);
 
     public:
 

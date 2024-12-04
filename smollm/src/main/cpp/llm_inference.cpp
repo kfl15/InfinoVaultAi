@@ -77,6 +77,42 @@ void LLMInference::start_completion(const char *query) {
     batch = llama_batch_get_one(prompt_tokens.data(), prompt_tokens.size());
 }
 
+// taken from:
+// https://github.com/ggerganov/llama.cpp/blob/master/examples/llama.android/llama/src/main/cpp/llama-android.cpp#L38
+bool LLMInference::is_valid_utf8(const char *response) {
+    if (!response) {
+        return true;
+    }
+    const unsigned char * bytes = (const unsigned char *)response;
+    int num;
+    while (*bytes != 0x00) {
+        if ((*bytes & 0x80) == 0x00) {
+            // U+0000 to U+007F
+            num = 1;
+        } else if ((*bytes & 0xE0) == 0xC0) {
+            // U+0080 to U+07FF
+            num = 2;
+        } else if ((*bytes & 0xF0) == 0xE0) {
+            // U+0800 to U+FFFF
+            num = 3;
+        } else if ((*bytes & 0xF8) == 0xF0) {
+            // U+10000 to U+10FFFF
+            num = 4;
+        } else {
+            return false;
+        }
+
+        bytes += 1;
+        for (int i = 1; i < num; ++i) {
+            if ((*bytes & 0xC0) != 0x80) {
+                return false;
+            }
+            bytes += 1;
+        }
+    }
+    return true;
+}
+
 
 std::string LLMInference::completion_loop() {
     // check if the length of the inputs to the model
@@ -100,15 +136,21 @@ std::string LLMInference::completion_loop() {
         return "[EOG]";
     }
     std::string piece = common_token_to_piece(ctx, curr_token, true);
-    response += piece;
-
-    LOGi("%s", response.c_str());
+    cache_response_tokens += piece;
 
     // re-init the batch with the newly predicted token
     // key, value pairs of all previous tokens have been cached
     // in the KV cache
     batch = llama_batch_get_one(&curr_token, 1);
-    return piece;
+
+    if (is_valid_utf8(cache_response_tokens.c_str())) {
+        response += cache_response_tokens;
+        std::string valid_utf8_piece = cache_response_tokens;
+        cache_response_tokens.clear();
+        return valid_utf8_piece;
+    }
+
+    return "";
 }
 
 
