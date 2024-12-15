@@ -18,10 +18,14 @@ package io.shubham0204.smollmandroid.ui.screens.chat
 
 import android.graphics.Color
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.widget.TextView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
+import io.shubham0204.smollmandroid.ui.theme.AppAccentColor
 
 @Composable
 fun ChatMessageText(
@@ -36,7 +40,10 @@ fun ChatMessageText(
             val textView = TextView(it)
             textView.textSize = textSize
             textView.setTextColor(textColor)
-            textView.setTextIsSelectable(true)
+            textView.movementMethod = LinkMovementMethod.getInstance()
+            textView.linksClickable = true
+            textView.autoLinkMask = Linkify.WEB_URLS
+            textView.setLinkTextColor(AppAccentColor.toArgb())
             textView.highlightColor = Color.YELLOW
             textView
         },

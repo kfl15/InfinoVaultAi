@@ -18,15 +18,20 @@ package io.shubham0204.smollmandroid.ui.screens.chat
 
 import android.content.Context
 import android.graphics.Color
+import android.text.util.Linkify
 import android.util.Log
 import android.util.TypedValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModel
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.core.MarkwonTheme
+import io.noties.markwon.ext.latex.JLatexMathPlugin
+import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
+import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.syntax.Prism4jThemeDarkula
 import io.noties.markwon.syntax.SyntaxHighlightPlugin
 import io.noties.prism4j.Prism4j
@@ -39,6 +44,7 @@ import io.shubham0204.smollmandroid.data.MessagesDB
 import io.shubham0204.smollmandroid.data.TasksDB
 import io.shubham0204.smollmandroid.llm.ModelsRepository
 import io.shubham0204.smollmandroid.prism4j.PrismGrammarLocator
+import io.shubham0204.smollmandroid.ui.theme.AppAccentColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -86,6 +92,12 @@ class ChatScreenViewModel(
                 .builder(context)
                 .usePlugin(CorePlugin.create())
                 .usePlugin(SyntaxHighlightPlugin.create(prism4j, Prism4jThemeDarkula.create()))
+                .usePlugin(MarkwonInlineParserPlugin.create())
+                .usePlugin(JLatexMathPlugin.create(12f, JLatexMathPlugin.BuilderConfigure {
+                    it.inlinesEnabled(true)
+                    it.blocksEnabled(true)
+                }))
+                .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
                 .usePlugin(
                     object : AbstractMarkwonPlugin() {
                         override fun configureTheme(builder: MarkwonTheme.Builder) {
@@ -101,6 +113,8 @@ class ChatScreenViewModel(
                                 .codeTextSize(spToPx(10f))
                                 .codeTextColor(Color.WHITE)
                                 .codeBackgroundColor(Color.BLACK)
+                                .linkColor(AppAccentColor.toArgb())
+                                .isLinkUnderlined(true)
                         }
                     },
                 ).build()
