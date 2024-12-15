@@ -16,6 +16,7 @@
 
 package io.shubham0204.smollmandroid.ui.screens.chat
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -47,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -66,7 +68,7 @@ fun EditChatSettingsScreen(
         var systemPrompt by remember { mutableStateOf(chat.systemPrompt) }
         var minP by remember { mutableFloatStateOf(chat.minP) }
         var temperature by remember { mutableFloatStateOf(chat.temperature) }
-
+        val context = LocalContext.current
         SmolLMAndroidTheme {
             Scaffold(
                 topBar = {
@@ -83,14 +85,20 @@ fun EditChatSettingsScreen(
                         actions = {
                             IconButton(
                                 onClick = {
-                                    viewModel.updateChat(
-                                        chat.copy(
-                                            name = chatName,
-                                            systemPrompt = systemPrompt,
-                                            minP = minP,
-                                            temperature = temperature,
-                                        ),
+                                    val updatedChat = chat.copy(
+                                        name = chatName,
+                                        systemPrompt = systemPrompt,
+                                        minP = minP,
+                                        temperature = temperature,
                                     )
+                                    if (chat != updatedChat) {
+                                        viewModel.updateChat(updatedChat)
+                                        Toast.makeText(
+                                            context,
+                                            "New settings have been applied to the chat.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
                                     onBackClicked()
                                 },
                             ) {
