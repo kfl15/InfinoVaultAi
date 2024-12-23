@@ -21,7 +21,6 @@ import android.graphics.Color
 import android.text.util.Linkify
 import android.util.Log
 import android.util.TypedValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModel
@@ -49,6 +48,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.annotation.KoinViewModel
@@ -66,26 +67,39 @@ class ChatScreenViewModel(
     val modelsRepository: ModelsRepository,
     val tasksDB: TasksDB,
 ) : ViewModel() {
-    val smolLM = SmolLM()
 
-    val currChatState = mutableStateOf<Chat?>(null)
+    // UI state variables
+    private val _currChatState = MutableStateFlow<Chat?>(null)
+    val currChatState: StateFlow<Chat?> = _currChatState
 
-    val isGeneratingResponse = mutableStateOf(false)
-    val partialResponse = mutableStateOf("")
+    private val _isGeneratingResponse = MutableStateFlow(false)
+    val isGeneratingResponse: StateFlow<Boolean> = _isGeneratingResponse
+
+    private val _isInitializingModel = MutableStateFlow(false)
+    val isInitializingModel: StateFlow<Boolean> = _isInitializingModel
+
+    private val _partialResponse = MutableStateFlow("")
+    val partialResponse: StateFlow<String> = _partialResponse
+
+    private val _showSelectModelListDialogState = MutableStateFlow(false)
+    val showSelectModelListDialogState: StateFlow<Boolean> = _showSelectModelListDialogState
+
+    private val _showMoreOptionsPopupState = MutableStateFlow(false)
+    val showMoreOptionsPopupState: StateFlow<Boolean> = _showMoreOptionsPopupState
+
+    private val _showTaskListBottomListState = MutableStateFlow(false)
+    val showTaskListBottomListState: StateFlow<Boolean> = _showTaskListBottomListState
+
+
+    private var responseGenerationJob: Job? = null
+    private val smolLM = SmolLM()
     var responseGenerationsSpeed: Float? = null
     var responseGenerationTimeSecs: Int? = null
-
-    val showSelectModelListDialogState = mutableStateOf(false)
-    val showMoreOptionsPopupState = mutableStateOf(false)
-    val showTaskListBottomListState = mutableStateOf(false)
-
-    val isInitializingModel = mutableStateOf(false)
-    var responseGenerationJob: Job? = null
-
     val markwon: Markwon
 
+
     init {
-        currChatState.value = chatsDB.loadDefaultChat()
+        _currChatState.value = chatsDB.loadDefaultChat()
         val prism4j = Prism4j(PrismGrammarLocator())
         markwon =
             Markwon
@@ -128,41 +142,41 @@ class ChatScreenViewModel(
     fun getChats(): Flow<List<Chat>> = chatsDB.getChats()
 
     fun getChatMessages(): Flow<List<ChatMessage>>? {
-        return currChatState.value?.let { chat ->
+        return _currChatState.value?.let { chat ->
             return messagesDB.getMessages(chat.id)
         }
     }
 
     fun updateChatLLM(modelId: Long) {
-        currChatState.value = currChatState.value?.copy(llmModelId = modelId)
-        chatsDB.updateChat(currChatState.value!!)
+        _currChatState.value = _currChatState.value?.copy(llmModelId = modelId)
+        chatsDB.updateChat(_currChatState.value!!)
     }
 
     fun updateChat(chat: Chat) {
-        currChatState.value = chat
+        _currChatState.value = chat
         chatsDB.updateChat(chat)
         loadModel()
     }
 
     fun sendUserQuery(query: String) {
-        currChatState.value?.let { chat ->
+        _currChatState.value?.let { chat ->
             chat.dateUsed = Date()
             chatsDB.updateChat(chat)
             if (chat.isTask) {
                 messagesDB.deleteMessages(chat.id)
             }
             messagesDB.addUserMessage(chat.id, query)
-            isGeneratingResponse.value = true
+            _isGeneratingResponse.value = true
             responseGenerationJob =
                 CoroutineScope(Dispatchers.Default).launch {
-                    partialResponse.value = ""
+                    _partialResponse.value = ""
                     val responseDuration =
                         measureTime {
-                            smolLM.getResponse(query).collect { partialResponse.value += it }
+                            smolLM.getResponse(query).collect { _partialResponse.value += it }
                         }
-                    messagesDB.addAssistantMessage(chat.id, partialResponse.value)
+                    messagesDB.addAssistantMessage(chat.id, _partialResponse.value)
                     withContext(Dispatchers.Main) {
-                        isGeneratingResponse.value = false
+                        _isGeneratingResponse.value = false
                         responseGenerationsSpeed = smolLM.getResponseGenerationSpeed()
                         responseGenerationTimeSecs = responseDuration.inWholeSeconds.toInt()
                     }
@@ -171,7 +185,7 @@ class ChatScreenViewModel(
     }
 
     fun stopGeneration() {
-        isGeneratingResponse.value = false
+        _isGeneratingResponse.value = false
         responseGenerationJob?.let { job ->
             if (job.isActive) {
                 job.cancel()
@@ -181,20 +195,20 @@ class ChatScreenViewModel(
 
     fun switchChat(chat: Chat) {
         stopGeneration()
-        currChatState.value = chat
+        _currChatState.value = chat
     }
 
     fun deleteChat(chat: Chat) {
         stopGeneration()
         chatsDB.deleteChat(chat)
         messagesDB.deleteMessages(chat.id)
-        currChatState.value = null
+        _currChatState.value = null
     }
 
     fun deleteModel(modelId: Long) {
         modelsRepository.deleteModel(modelId)
-        if (currChatState.value?.llmModelId == modelId) {
-            currChatState.value = currChatState.value?.copy(llmModelId = -1)
+        if (_currChatState.value?.llmModelId == modelId) {
+            _currChatState.value = _currChatState.value?.copy(llmModelId = -1)
             smolLM.close()
         }
     }
@@ -205,13 +219,13 @@ class ChatScreenViewModel(
      * read the system prompt and user messages from the database and add them to the model.
      */
     fun loadModel() {
-        currChatState.value?.let { chat ->
+        _currChatState.value?.let { chat ->
             if (chat.llmModelId == -1L) {
-                showSelectModelListDialogState.value = true
+                _showSelectModelListDialogState.value = true
             } else {
                 val model = modelsRepository.getModelFromId(chat.llmModelId)
                 if (model != null) {
-                    isInitializingModel.value = true
+                    _isInitializingModel.value = true
                     CoroutineScope(Dispatchers.Default).launch {
                         smolLM.create(model.path, chat.minP, chat.temperature, !chat.isTask)
                         LOGD("Model loaded")
@@ -230,10 +244,10 @@ class ChatScreenViewModel(
                                 }
                             }
                         }
-                        withContext(Dispatchers.Main) { isInitializingModel.value = false }
+                        withContext(Dispatchers.Main) { _isInitializingModel.value = false }
                     }
                 } else {
-                    showSelectModelListDialogState.value = true
+                    _showSelectModelListDialogState.value = true
                 }
             }
         }
@@ -242,5 +256,29 @@ class ChatScreenViewModel(
     override fun onCleared() {
         super.onCleared()
         smolLM.close()
+    }
+
+    fun showSelectModelListDialog() {
+        _showSelectModelListDialogState.value = true
+    }
+
+    fun hideSelectModelListDialog() {
+        _showSelectModelListDialogState.value = false
+    }
+
+    fun showMoreOptionsPopup() {
+        _showMoreOptionsPopupState.value = true
+    }
+
+    fun hideMoreOptionsPopup() {
+        _showMoreOptionsPopupState.value = false
+    }
+
+    fun showTaskListBottomList() {
+        _showTaskListBottomListState.value = true
+    }
+
+    fun hideTaskListBottomList() {
+        _showTaskListBottomListState.value = false
     }
 }

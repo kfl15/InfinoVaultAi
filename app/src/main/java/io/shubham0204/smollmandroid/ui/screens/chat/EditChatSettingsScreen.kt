@@ -52,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.shubham0204.smollmandroid.ui.components.AppBarTitleText
 import io.shubham0204.smollmandroid.ui.components.SmallLabelText
 import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
@@ -63,7 +64,8 @@ fun EditChatSettingsScreen(
     viewModel: ChatScreenViewModel,
     onBackClicked: () -> Unit,
 ) {
-    viewModel.currChatState.value?.let { chat ->
+    val currChat by viewModel.currChatState.collectAsStateWithLifecycle()
+    currChat?.let { chat ->
         var chatName by remember { mutableStateOf(chat.name) }
         var systemPrompt by remember { mutableStateOf(chat.systemPrompt) }
         var minP by remember { mutableFloatStateOf(chat.minP) }
@@ -113,47 +115,47 @@ fun EditChatSettingsScreen(
             ) { paddingValues ->
                 Column(
                     modifier =
-                        Modifier
-                            .background(MaterialTheme.colorScheme.background)
-                            .fillMaxSize()
-                            .padding(16.dp)
-                            .padding(paddingValues)
-                            .verticalScroll(rememberScrollState()),
+                    Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .padding(paddingValues)
+                        .verticalScroll(rememberScrollState()),
                 ) {
                     TextField(
                         colors =
-                            TextFieldDefaults.colors(
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White,
-                            ),
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                        ),
                         modifier = Modifier.fillMaxWidth(),
                         value = chatName,
                         onValueChange = { chatName = it },
                         label = { Text("Chat Name", fontFamily = AppFontFamily) },
                         textStyle = TextStyle(fontFamily = AppFontFamily),
                         keyboardOptions =
-                            KeyboardOptions.Default.copy(
-                                capitalization = KeyboardCapitalization.Words,
-                            ),
+                        KeyboardOptions.Default.copy(
+                            capitalization = KeyboardCapitalization.Words,
+                        ),
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     TextField(
                         colors =
-                            TextFieldDefaults.colors(
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White,
-                            ),
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                        ),
                         modifier = Modifier.fillMaxWidth(),
                         value = systemPrompt,
                         onValueChange = { systemPrompt = it },
                         label = { Text("System Prompt", fontFamily = AppFontFamily) },
                         textStyle = TextStyle(fontFamily = AppFontFamily),
                         keyboardOptions =
-                            KeyboardOptions.Default.copy(
-                                capitalization = KeyboardCapitalization.Sentences,
-                            ),
+                        KeyboardOptions.Default.copy(
+                            capitalization = KeyboardCapitalization.Sentences,
+                        ),
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -161,7 +163,7 @@ fun EditChatSettingsScreen(
                     if (chat.isTask) {
                         SmallLabelText(
                             "Updates to the name and system prompt will only be reflected in the chat and " +
-                                "not in the task.",
+                                    "not in the task.",
                         )
                     }
 
@@ -174,7 +176,7 @@ fun EditChatSettingsScreen(
                     )
                     Text(
                         "minP is a sampling technique that limits the vocabulary choices during LLM inference, ensuring that only " +
-                            "tokens with probabilities exceeding the minP threshold are considered, leading to more focused and less random outputs.",
+                                "tokens with probabilities exceeding the minP threshold are considered, leading to more focused and less random outputs.",
                         fontFamily = AppFontFamily,
                         style = MaterialTheme.typography.labelSmall,
                     )
@@ -199,8 +201,8 @@ fun EditChatSettingsScreen(
                     )
                     Text(
                         "Temperature is a parameter that controls the randomness and creativity of " +
-                            "LLM outputs, with lower temperatures producing more deterministic and focused responses," +
-                            " and higher temperatures leading to more diverse and creative outputs.",
+                                "LLM outputs, with lower temperatures producing more deterministic and focused responses," +
+                                " and higher temperatures leading to more diverse and creative outputs.",
                         fontFamily = AppFontFamily,
                         style = MaterialTheme.typography.labelSmall,
                     )

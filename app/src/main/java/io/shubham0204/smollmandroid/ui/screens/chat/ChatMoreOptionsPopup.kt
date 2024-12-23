@@ -27,8 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.shubham0204.smollmandroid.ui.components.createAlertDialog
 import io.shubham0204.smollmandroid.ui.theme.AppFontFamily
 
@@ -37,25 +36,25 @@ fun ChatMoreOptionsPopup(
     viewModel: ChatScreenViewModel,
     onEditChatSettingsClick: () -> Unit,
 ) {
-    var expanded by remember { viewModel.showMoreOptionsPopupState }
+    val expanded by viewModel.showMoreOptionsPopupState.collectAsStateWithLifecycle()
     DropdownMenu(
         expanded = expanded,
-        onDismissRequest = { expanded = false },
+        onDismissRequest = { viewModel.hideMoreOptionsPopup() },
     ) {
         DropdownMenuItem(
             leadingIcon = { Icon(Icons.Default.Settings, contentDescription = "Edit Chat Name") },
             text = { Text("Edit Chat Settings", fontFamily = AppFontFamily) },
             onClick = {
                 onEditChatSettingsClick()
-                expanded = false
+                viewModel.hideMoreOptionsPopup()
             },
         )
         DropdownMenuItem(
             leadingIcon = { Icon(Icons.Default.Assistant, contentDescription = "Change Model") },
             text = { Text("Change Model", fontFamily = AppFontFamily) },
             onClick = {
-                viewModel.showSelectModelListDialogState.value = true
-                expanded = false
+                viewModel.showSelectModelListDialog()
+                viewModel.hideMoreOptionsPopup()
             },
         )
         DropdownMenuItem(
@@ -80,7 +79,7 @@ fun ChatMoreOptionsPopup(
                         onNegativeButtonClick = {},
                     )
                 }
-                expanded = false
+                viewModel.hideMoreOptionsPopup()
             },
         )
     }

@@ -88,6 +88,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -139,7 +141,7 @@ fun ChatActivityScreenUI(
     onEditChatParamsClick: () -> Unit,
 ) {
     val context = LocalContext.current
-    val currChat by remember { viewModel.currChatState }
+    val currChat by viewModel.currChatState.collectAsStateWithLifecycle(lifecycleOwner = LocalLifecycleOwner.current)
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     LaunchedEffect(currChat) { viewModel.loadModel() }
@@ -161,7 +163,7 @@ fun ChatActivityScreenUI(
                     },
                     onCreateTaskClick = {
                         scope.launch { drawerState.close() }
-                        viewModel.showTaskListBottomListState.value = true
+                        viewModel.showTaskListBottomList()
                     },
                 )
             },
@@ -202,7 +204,7 @@ fun ChatActivityScreenUI(
                             if (currChat != null) {
                                 Box {
                                     IconButton(
-                                        onClick = { viewModel.showMoreOptionsPopupState.value = true },
+                                        onClick = { viewModel.showMoreOptionsPopup() },
                                     ) {
                                         Icon(
                                             Icons.Default.MoreVert,
@@ -218,9 +220,9 @@ fun ChatActivityScreenUI(
             ) { innerPadding ->
                 Column(
                     modifier =
-                        Modifier
-                            .padding(innerPadding)
-                            .background(MaterialTheme.colorScheme.background),
+                    Modifier
+                        .padding(innerPadding)
+                        .background(MaterialTheme.colorScheme.background),
                 ) {
                     if (currChat != null) {
                         ScreenUI(viewModel)
@@ -228,55 +230,42 @@ fun ChatActivityScreenUI(
                 }
             }
         }
-
-        var showSelectModelsListDialog by remember { viewModel.showSelectModelListDialogState }
-        if (showSelectModelsListDialog) {
-            val modelsList by
-                viewModel.modelsRepository.getAvailableModels().collectAsState(emptyList())
-            SelectModelsList(
-                onDismissRequest = { showSelectModelsListDialog = false },
-                modelsList,
-                onModelListItemClick = { model ->
-                    viewModel.updateChatLLM(model.id)
-                    viewModel.loadModel()
-                    showSelectModelsListDialog = false
-                },
-                onModelDeleteClick = { model ->
-                    viewModel.deleteModel(model.id)
-                    Toast
-                        .makeText(
-                            viewModel.context,
-                            "Model '${model.name}' deleted",
-                            Toast.LENGTH_LONG,
-                        ).show()
-                },
-            )
-        }
-
+        SelectModelsList(viewModel)
         TasksListBottomSheet(viewModel)
     }
 }
 
 @Composable
 private fun ColumnScope.ScreenUI(viewModel: ChatScreenViewModel) {
-    MessagesList(viewModel)
-    MessageInput(viewModel)
+    val isGeneratingResponse by viewModel.isGeneratingResponse.collectAsStateWithLifecycle()
+    MessagesList(
+        viewModel,
+        isGeneratingResponse,
+    )
+    MessageInput(
+        viewModel,
+        isGeneratingResponse
+    )
 }
 
 @Composable
-private fun ColumnScope.MessagesList(viewModel: ChatScreenViewModel) {
+private fun ColumnScope.MessagesList(
+    viewModel: ChatScreenViewModel,
+    isGeneratingResponse: Boolean,
+) {
     val context = LocalContext.current
     val listState = rememberLazyListState()
     viewModel.getChatMessages()?.let { chatMessagesFlow ->
         val messages by chatMessagesFlow.collectAsState(emptyList())
-        val isGeneratingResponse by remember { viewModel.isGeneratingResponse }
-        val partialResponse by remember { viewModel.partialResponse }
+        val partialResponse by viewModel.partialResponse.collectAsStateWithLifecycle()
         LaunchedEffect(messages.size) {
             if (messages.isNotEmpty()) {
                 listState.animateScrollToItem(messages.size)
             }
         }
-        LazyColumn(state = listState, modifier = Modifier.fillMaxSize().weight(1f)) {
+        LazyColumn(state = listState, modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)) {
             itemsIndexed(messages) { i, chatMessage ->
                 MessageListItem(
                     viewModel.markwon.render(viewModel.markwon.parse(chatMessage.message)),
@@ -315,10 +304,10 @@ private fun ColumnScope.MessagesList(viewModel: ChatScreenViewModel) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                                    .animateItem(),
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .animateItem(),
                         ) {
                             Icon(
                                 modifier = Modifier.padding(8.dp),
@@ -328,7 +317,9 @@ private fun ColumnScope.MessagesList(viewModel: ChatScreenViewModel) {
                             )
                             Text(
                                 text = "Thinking ...",
-                                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
                                 fontFamily = AppFontFamily,
                                 fontSize = 12.sp,
                             )
@@ -351,7 +342,9 @@ private fun LazyItemScope.MessageListItem(
     modifier: Modifier = Modifier,
 ) {
     if (!isUserMessage) {
-        Row(modifier = modifier.fillMaxWidth().animateItem()) {
+        Row(modifier = modifier
+            .fillMaxWidth()
+            .animateItem()) {
             Column {
                 Spacer(modifier = Modifier.height(8.dp))
                 Icon(
@@ -366,11 +359,11 @@ private fun LazyItemScope.MessageListItem(
                     // to make pointerInput work in MarkdownText use disableLinkMovementMethod
                     // https://github.com/jeziellago/compose-markdown/issues/85#issuecomment-2184040304
                     modifier =
-                        Modifier
-                            .padding(4.dp)
-                            .background(Color.Transparent)
-                            .padding(4.dp)
-                            .fillMaxSize(),
+                    Modifier
+                        .padding(4.dp)
+                        .background(Color.Transparent)
+                        .padding(4.dp)
+                        .fillMaxSize(),
                     textColor = android.graphics.Color.BLACK,
                     textSize = 16f,
                     message = messageStr,
@@ -394,10 +387,10 @@ private fun LazyItemScope.MessageListItem(
                         Spacer(modifier = Modifier.width(6.dp))
                         Box(
                             modifier =
-                                Modifier
-                                    .size(2.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.DarkGray),
+                            Modifier
+                                .size(2.dp)
+                                .clip(CircleShape)
+                                .background(Color.DarkGray),
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
@@ -408,10 +401,10 @@ private fun LazyItemScope.MessageListItem(
                         Spacer(modifier = Modifier.width(6.dp))
                         Box(
                             modifier =
-                                Modifier
-                                    .size(2.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.DarkGray),
+                            Modifier
+                                .size(2.dp)
+                                .clip(CircleShape)
+                                .background(Color.DarkGray),
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
@@ -425,16 +418,18 @@ private fun LazyItemScope.MessageListItem(
         }
     } else {
         Row(
-            modifier = Modifier.fillMaxWidth().animateItem(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateItem(),
             horizontalArrangement = Arrangement.End,
         ) {
             ChatMessageText(
                 modifier =
-                    Modifier
-                        .padding(8.dp)
-                        .background(AppAccentColor, RoundedCornerShape(16.dp))
-                        .padding(8.dp)
-                        .widthIn(max = 250.dp),
+                Modifier
+                    .padding(8.dp)
+                    .background(AppAccentColor, RoundedCornerShape(16.dp))
+                    .padding(8.dp)
+                    .widthIn(max = 250.dp),
                 textColor = android.graphics.Color.WHITE,
                 textSize = 16f,
                 message = messageStr,
@@ -444,8 +439,12 @@ private fun LazyItemScope.MessageListItem(
 }
 
 @Composable
-private fun MessageInput(viewModel: ChatScreenViewModel) {
-    val currChat by remember { viewModel.currChatState }
+private fun MessageInput(
+    viewModel: ChatScreenViewModel,
+    isGeneratingResponse: Boolean,
+) {
+    val currChat by viewModel.currChatState.collectAsStateWithLifecycle()
+    val isInitializingModel by viewModel.isInitializingModel.collectAsStateWithLifecycle()
     if ((currChat?.llmModelId ?: -1L) == -1L) {
         Text(
             modifier = Modifier.padding(8.dp),
@@ -454,36 +453,36 @@ private fun MessageInput(viewModel: ChatScreenViewModel) {
         )
     } else {
         var questionText by remember { mutableStateOf("") }
-        val isGeneratingResponse by remember { viewModel.isGeneratingResponse }
-        val isInitializingModel by remember { viewModel.isInitializingModel }
         val context = LocalContext.current
         val keyboardController = LocalSoftwareKeyboardController.current
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
             TextField(
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 value = questionText,
                 onValueChange = { questionText = it },
                 shape = RoundedCornerShape(16.dp),
                 colors =
-                    TextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        disabledTextColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                    ),
+                TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    disabledTextColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
                 placeholder = {
                     Text(
                         text =
-                            if (isGeneratingResponse || isInitializingModel) {
-                                "Loading model ..."
-                            } else {
-                                "Ask a question"
-                            },
+                        if (isGeneratingResponse || isInitializingModel) {
+                            "Loading model ..."
+                        } else {
+                            "Ask a question"
+                        },
                     )
                 },
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences),
+                KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences),
             )
             Spacer(modifier = Modifier.width(8.dp))
             if (isGeneratingResponse || isInitializingModel) {
@@ -520,20 +519,20 @@ private fun MessageInput(viewModel: ChatScreenViewModel) {
 @Composable
 private fun TasksListBottomSheet(viewModel: ChatScreenViewModel) {
     val context = LocalContext.current
-    var showTaskListBottomList by remember { viewModel.showTaskListBottomListState }
+    val showTaskListBottomList by viewModel.showTaskListBottomListState.collectAsStateWithLifecycle()
     if (showTaskListBottomList) {
         // adding bottom sheets in Compose
         // See https://developer.android.com/develop/ui/compose/components/bottom-sheets
         ModalBottomSheet(
             containerColor = Color.White,
-            onDismissRequest = { showTaskListBottomList = false },
+            onDismissRequest = { viewModel.hideTaskListBottomList() },
         ) {
             Column(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(8.dp))
-                        .padding(8.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, RoundedCornerShape(8.dp))
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -551,7 +550,7 @@ private fun TasksListBottomSheet(viewModel: ChatScreenViewModel) {
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedButton(
                         onClick = {
-                            showTaskListBottomList = false
+                            viewModel.showTaskListBottomList()
                             Intent(context, ManageTasksActivity::class.java).also {
                                 context.startActivity(it)
                             }
@@ -585,7 +584,7 @@ private fun TasksListBottomSheet(viewModel: ChatScreenViewModel) {
                                     isTask = true,
                                 ),
                             )
-                            showTaskListBottomList = false
+                            viewModel.showTaskListBottomList()
                         },
                         onEditTaskClick = { // Not applicable as showTaskOptions is set to `false`
                         },
@@ -597,5 +596,32 @@ private fun TasksListBottomSheet(viewModel: ChatScreenViewModel) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SelectModelsList(viewModel: ChatScreenViewModel) {
+    val showSelectModelsListDialog by viewModel.showSelectModelListDialogState.collectAsStateWithLifecycle()
+    if (showSelectModelsListDialog) {
+        val modelsList by
+        viewModel.modelsRepository.getAvailableModels().collectAsState(emptyList())
+        SelectModelsList(
+            onDismissRequest = { viewModel.hideSelectModelListDialog() },
+            modelsList,
+            onModelListItemClick = { model ->
+                viewModel.updateChatLLM(model.id)
+                viewModel.loadModel()
+                viewModel.hideSelectModelListDialog()
+            },
+            onModelDeleteClick = { model ->
+                viewModel.deleteModel(model.id)
+                Toast
+                    .makeText(
+                        viewModel.context,
+                        "Model '${model.name}' deleted",
+                        Toast.LENGTH_LONG,
+                    ).show()
+            },
+        )
     }
 }
