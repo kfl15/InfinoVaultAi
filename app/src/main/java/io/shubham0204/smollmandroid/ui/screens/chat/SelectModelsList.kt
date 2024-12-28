@@ -182,14 +182,6 @@ fun SelectModelsList(
                         )
                     }
                 }
-                items(modelsList) {
-                    ModelListItem(
-                        model = it,
-                        onModelListItemClick,
-                        onModelDeleteClick,
-                        showModelDeleteIcon,
-                    )
-                }
             }
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedButton(
