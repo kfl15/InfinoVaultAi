@@ -48,6 +48,9 @@ set(SOURCES
         smollm.cpp
 )
 
+# compiling for different CPU extensions for Arm64 (aarch64)
+# See docs/build_arm_flags.md for more details
+
 function(build_library target_name cpu_flags)
     add_library(
             ${target_name}
