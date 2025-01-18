@@ -1,6 +1,6 @@
 #include "llama.h"
 #include "common.h"
-#include "llm_inference.h"
+#include "LLMInference.h"
 #include <jni.h>
 
 extern "C"
@@ -8,44 +8,44 @@ JNIEXPORT jlong JNICALL
 Java_io_shubham0204_smollm_SmolLM_loadModel(
     JNIEnv *env,
     jobject thiz,
-    jstring model_path,
-    jfloat min_p,
+    jstring modelPath,
+    jfloat minP,
     jfloat temperature,
-    jboolean store_chats
+    jboolean storeChats
 ) {
     jboolean isCopy = true;
-    const char* model_path_cstr = env->GetStringUTFChars(model_path, &isCopy);
+    const char *modelPathCstr = env->GetStringUTFChars(modelPath, &isCopy);
     LLMInference* llmInference = new LLMInference();
 
     try {
-        llmInference->load_model(model_path_cstr, min_p, temperature, store_chats);
+        llmInference->loadModel(modelPathCstr, minP, temperature, storeChats);
     }
     catch (std::runtime_error& error) {
         env->ThrowNew(env->FindClass("java/lang/IllegalStateException"), error.what());
     }
 
-    env->ReleaseStringUTFChars(model_path, model_path_cstr);
+    env->ReleaseStringUTFChars(modelPath, modelPathCstr);
     return reinterpret_cast<jlong>(llmInference);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_io_shubham0204_smollm_SmolLM_addChatMessage(JNIEnv *env, jobject thiz, jlong model_ptr, jstring message,
+Java_io_shubham0204_smollm_SmolLM_addChatMessage(JNIEnv *env, jobject thiz, jlong modelPtr, jstring message,
                                                  jstring role) {
     jboolean isCopy = true;
-    const char* message_cstr = env->GetStringUTFChars(message, &isCopy);
-    const char* role_cstr = env->GetStringUTFChars(role, &isCopy);
-    LLMInference* llmInference = reinterpret_cast<LLMInference*>(model_ptr);
-    llmInference->add_chat_message(message_cstr, role_cstr);
-    env->ReleaseStringUTFChars(message, message_cstr);
-    env->ReleaseStringUTFChars(role, role_cstr);
+    const char *messageCstr = env->GetStringUTFChars(message, &isCopy);
+    const char *roleCstr = env->GetStringUTFChars(role, &isCopy);
+    LLMInference *llmInference = reinterpret_cast<LLMInference *>(modelPtr);
+    llmInference->addChatMessage(messageCstr, roleCstr);
+    env->ReleaseStringUTFChars(message, messageCstr);
+    env->ReleaseStringUTFChars(role, roleCstr);
 }
 
 extern "C"
 JNIEXPORT jfloat JNICALL
-Java_io_shubham0204_smollm_SmolLM_getResponseGenerationSpeed(JNIEnv *env, jobject thiz, jlong model_ptr) {
-    LLMInference* llmInference = reinterpret_cast<LLMInference*>(model_ptr);
-    return llmInference->get_response_generation_time();
+Java_io_shubham0204_smollm_SmolLM_getResponseGenerationSpeed(JNIEnv *env, jobject thiz, jlong modelPtr) {
+    LLMInference *llmInference = reinterpret_cast<LLMInference *>(modelPtr);
+    return llmInference->getResponseGenerationTime();
 }
 
 extern "C"
@@ -53,9 +53,9 @@ JNIEXPORT void JNICALL
 Java_io_shubham0204_smollm_SmolLM_close(
     JNIEnv *env,
     jobject thiz,
-    jlong model_ptr
+    jlong modelPtr
 ) {
-    LLMInference* llmInference = reinterpret_cast<LLMInference*>(model_ptr);
+    LLMInference *llmInference = reinterpret_cast<LLMInference *>(modelPtr);
     delete llmInference;
 }
 
@@ -65,14 +65,14 @@ JNIEXPORT void JNICALL
 Java_io_shubham0204_smollm_SmolLM_startCompletion(
     JNIEnv *env,
     jobject thiz,
-    jlong model_ptr,
+    jlong modelPtr,
     jstring prompt
 ) {
     jboolean isCopy = true;
-    const char* prompt_cstr = env->GetStringUTFChars(prompt, &isCopy);
-    LLMInference* llmInference = reinterpret_cast<LLMInference*>(model_ptr);
-    llmInference->start_completion(prompt_cstr);
-    env->ReleaseStringUTFChars(prompt, prompt_cstr);
+    const char *promptCstr = env->GetStringUTFChars(prompt, &isCopy);
+    LLMInference *llmInference = reinterpret_cast<LLMInference *>(modelPtr);
+    llmInference->startCompletion(promptCstr);
+    env->ReleaseStringUTFChars(prompt, promptCstr);
 }
 
 
@@ -81,11 +81,11 @@ JNIEXPORT jstring JNICALL
 Java_io_shubham0204_smollm_SmolLM_completionLoop(
     JNIEnv *env,
     jobject thiz,
-    jlong model_ptr
+    jlong modelPtr
 ) {
-    LLMInference* llmInference = reinterpret_cast<LLMInference*>(model_ptr);
+    LLMInference *llmInference = reinterpret_cast<LLMInference *>(modelPtr);
     try {
-        std::string response = llmInference->completion_loop();
+        std::string response = llmInference->completionLoop();
         return env->NewStringUTF(response.c_str());
     }
     catch (std::runtime_error& error) {
@@ -100,8 +100,8 @@ JNIEXPORT void JNICALL
 Java_io_shubham0204_smollm_SmolLM_stopCompletion(
     JNIEnv *env,
     jobject thiz,
-    jlong model_ptr
+    jlong modelPtr
 ) {
-    LLMInference* llmInference = reinterpret_cast<LLMInference*>(model_ptr);
-    llmInference->stop_completion();
+    LLMInference *llmInference = reinterpret_cast<LLMInference *>(modelPtr);
+    llmInference->stopCompletion();
 }

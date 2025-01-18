@@ -36,7 +36,7 @@ set(SOURCES
         ${COMMON_DIR}/ngram-cache.cpp
         ${COMMON_DIR}/sampling.cpp
 
-        llm_inference.cpp
+        LLMInference.cpp
         smollm.cpp
 )
 
