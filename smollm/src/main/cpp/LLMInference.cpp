@@ -12,7 +12,7 @@
 void LLMInference::loadModel(const char *model_path, float min_p, float temperature, bool store_chats) {
     // create an instance of llama_model
     llama_model_params model_params = llama_model_default_params();
-    _model = llama_load_model_from_file(model_path, model_params);
+    _model = llama_model_load_from_file(model_path, model_params);
 
     if (!_model) {
         LOGe("failed to load model from %s", model_path);
@@ -23,7 +23,7 @@ void LLMInference::loadModel(const char *model_path, float min_p, float temperat
     llama_context_params ctx_params = llama_context_default_params();
     ctx_params.n_ctx = 0;               // take context size from the model GGUF file
     ctx_params.no_perf = true;          // disable performance metrics
-    _ctx = llama_new_context_with_model(_model, ctx_params);
+    _ctx = llama_init_from_model(_model, ctx_params);
 
     if (!_ctx) {
         LOGe("llama_new_context_with_model() returned null)");
@@ -60,9 +60,9 @@ void LLMInference::startCompletion(const char *query) {
     _responseNumTokens = 0;
     addChatMessage(query, "user");
     // apply the chat-template
+    const char *tmpl = llama_model_chat_template(_model, nullptr);
     int newLen = llama_chat_apply_template(
-            _model,
-            nullptr,
+            tmpl,
             _messages.data(),
             _messages.size(),
             true,
@@ -73,14 +73,14 @@ void LLMInference::startCompletion(const char *query) {
         // resize the output buffer `_formattedMessages`
         // and re-apply the chat template
         _formattedMessages.resize(newLen);
-        newLen = llama_chat_apply_template(_model, nullptr, _messages.data(), _messages.size(), true,
+        newLen = llama_chat_apply_template(tmpl, _messages.data(), _messages.size(), true,
                                            _formattedMessages.data(), _formattedMessages.size());
     }
     if (newLen < 0) {
         throw std::runtime_error("llama_chat_apply_template() in LLMInference::startCompletion() failed");
     }
     std::string prompt(_formattedMessages.begin() + _prevLen, _formattedMessages.begin() + newLen);
-    _promptTokens = common_tokenize(_model, prompt, true, true);
+    _promptTokens = common_tokenize(llama_model_get_vocab(_model), prompt, true, true);
 
     // create a llama_batch containing a single sequence
     // see llama_batch_init for more details
@@ -144,7 +144,7 @@ std::string LLMInference::completionLoop() {
     // sample a token and check if it is an EOG (end of generation token)
     // convert the integer token to its corresponding word-piece
     _currToken = llama_sampler_sample(_sampler, _ctx, -1);
-    if (llama_token_is_eog(_model, _currToken)) {
+    if (llama_vocab_is_eog(llama_model_get_vocab(_model), _currToken)) {
         addChatMessage(strdup(_response.data()), "assistant");
         _response.clear();
         return "[EOG]";
@@ -174,12 +174,12 @@ std::string LLMInference::completionLoop() {
 
 void LLMInference::stopCompletion() {
     if (_storeChats) {
-        addChatMessage(strdup(_response.c_str()), "assistant");
+        addChatMessage(_response.c_str(), "assistant");
     }
     _response.clear();
+    const char *tmpl = llama_model_chat_template(_model, nullptr);
     _prevLen = llama_chat_apply_template(
-            _model,
-            nullptr,
+            tmpl,
             _messages.data(),
             _messages.size(),
             false,
@@ -201,5 +201,5 @@ LLMInference::~LLMInference() {
     llama_kv_cache_clear(_ctx);
     llama_sampler_free(_sampler);
     llama_free(_ctx);
-    llama_free_model(_model);
+    llama_model_free(_model);
 }
