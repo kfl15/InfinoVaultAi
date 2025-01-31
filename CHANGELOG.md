@@ -1,6 +1,5 @@
-- This version comes with performance improvements for arm64 devices by compiling llama.cpp with Arm64-specific CPU 
-  flags. (#18)
-- The chat messages can now highlight links/URLs and make them clickable.
-- The height of the list in the select model dialog is fixed to avoid overlapping with the `Add Model` button. (#12)
-- The dialog to select models includes a button to sort models by name or date added.
-- The time taken (in seconds) to generate the response is now displayed below the last response from the LLM. (#7)
+- The 'Download Models' screen now includes an interface to browse HuggingFace models and download them from the app
+  directly (#17)
+- Improved error handling for errors occurring in the native code (#31)
+- The 'Chat Settings' screen now includes a field to configure the model's context size (#34)
+- Sync with upstream llama.cpp (particularly for DeepSeek support)
