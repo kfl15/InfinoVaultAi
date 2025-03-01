@@ -16,6 +16,7 @@
 
 package io.shubham0204.smollmandroid.ui.screens.chat
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.util.Linkify
@@ -285,6 +286,7 @@ class ChatScreenViewModel(
             false
         }
 
+    @SuppressLint("StringFormatMatches")
     fun showContextLengthUsageDialog() {
         _currChatState.value?.let { chat ->
             createAlertDialog(
