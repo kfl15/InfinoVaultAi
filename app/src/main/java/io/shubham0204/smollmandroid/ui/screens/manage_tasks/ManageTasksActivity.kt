@@ -227,6 +227,11 @@ private fun TaskItem(
                     TaskOptionsPopup(
                         onDismiss = { showTaskOptionsPopup = false },
                         onDeleteTaskClick = {
+                            task.shortcutId?.let {
+                                ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(it))
+                                onUpdateTask(task.copy(shortcutId = null))
+                                Toast.makeText(context, "Shortcut for task '${task.name}' removed", Toast.LENGTH_LONG).show()
+                            }
                             onDeleteTaskClick()
                             showTaskOptionsPopup = false
                         },
