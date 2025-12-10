@@ -1,0 +1,88 @@
+# --------------------
+# Global
+# --------------------
+.DS_Store
+Thumbs.db
+
+# --------------------
+# Python
+# --------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.pkl
+*.log
+
+# Virtual environments
+venv/
+.env/
+.env.*/
+.venv/
+venv*/
+ENV/
+env/
+env.bak/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python build
+build/
+dist/
+*.egg-info/
+
+# --------------------
+# Android / Gradle / IntelliJ
+# --------------------
+*.iml
+.gradle/
+local.properties
+/.idea/
+.idea/
+*.ipr
+*.iws
+out/
+
+# Android/Gradle build
+android/.gradle/
+android/build/
+android/*/build/
+android/app/build/
+build/
+captures/
+outputs/
+generated/
+*/build/
+
+# Log files
+*.log
+
+# Android Studio
+/.navigation/
+.android/
+caches/
+
+# Keystores (never commit real ones)
+*.jks
+*.keystore
+*.pem
+*.p12
+
+# Misc
+*.tmp
+*.temp
+
+# --------------------
+# OS
+# --------------------
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# --------------------
+# VS Code
+# --------------------
+.vscode/
