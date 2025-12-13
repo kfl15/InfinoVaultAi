@@ -1,3 +1,26 @@
+# Environment files
+.env
+*.env
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Chroma database
+backend/chroma_store/
+
+# Uploaded PDFs
+backend/uploaded_pdfs/
+
+# IDE folders
+.idea/
+.vscode/
+
+# Rough / temp
+ROUGH/
+
+
+
 # --------------------
 # Global
 # --------------------
