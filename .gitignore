@@ -1,111 +1,110 @@
+# =========================================
+# PYTHON BACKEND IGNORE RULES
+# =========================================
+
 # Environment files
 .env
 *.env
+.env.*
 
 # Python caches
 __pycache__/
 *.pyc
-
-# Chroma database
-backend/chroma_store/
-
-# Uploaded PDFs
-backend/uploaded_pdfs/
-
-# IDE folders
-.idea/
-.vscode/
-
-# Rough / temp
-ROUGH/
-
-
-
-# --------------------
-# Global
-# --------------------
-.DS_Store
-Thumbs.db
-
-# --------------------
-# Python
-# --------------------
-__pycache__/
-*.py[cod]
 *.pyo
 *.pyd
-*.pyc
-*.pdb
-*.pkl
-*.log
 
-# Virtual environments
+# Chroma vector DB
+backend/chroma_store/
+
+# Uploaded PDFs storage
+backend/uploaded_pdfs/
+
+# Virtual environments (you said you use external venvs—but we ignore anyway)
 venv/
-.env/
-.env.*/
 .venv/
 venv*/
 ENV/
 env/
+env.*/
 env.bak/
 
-# Jupyter
-.ipynb_checkpoints/
-
-# Python build
+# Python build artifacts
 build/
 dist/
 *.egg-info/
+.ipynb_checkpoints/
 
-# --------------------
-# Android / Gradle / IntelliJ
-# --------------------
-*.iml
+
+# =========================================
+# ANDROID / GRADLE IGNORE RULES
+# =========================================
+
+# Gradle caches
 .gradle/
-local.properties
-/.idea/
-.idea/
-*.ipr
-*.iws
-out/
-
-# Android/Gradle build
 android/.gradle/
-android/build/
-android/*/build/
+
+# Build outputs
 android/app/build/
-build/
-captures/
-outputs/
-generated/
+android/build/
 */build/
+*/out/
+captures/
+generated/
+outputs/
 
-# Log files
-*.log
+# APK / AAB files
+*.apk
+*.aar
+*.aab
+*.ap_
 
-# Android Studio
-/.navigation/
-.android/
-caches/
+# Local config
+local.properties
 
-# Keystores (never commit real ones)
+# Android Studio / IntelliJ project files
+*.iml
+.idea/
+android/.idea/
+
+# Keystores (very important)
 *.jks
 *.keystore
 *.pem
 *.p12
 
-# Misc
+# Misc Android
+android/app/release/
+android/app/debug/
+.android/
+.navigation/
+
+# Logs
+*.log
+
+
+# =========================================
+# IDE / EDITOR IGNORE
+# =========================================
+
+.vscode/
+.idea/
+
+
+# =========================================
+# TEMP / ROUGH / MISC
+# =========================================
+
+ROUGH/
 *.tmp
 *.temp
 
-# --------------------
-# OS
-# --------------------
+
+# =========================================
+# OS-SPECIFIC
+# =========================================
+
+.DS_Store
+Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-
-# --------------------
-# VS Code
-# --------------------
-.vscode/
