@@ -1,10 +1,12 @@
-﻿# Roadmap: SmolChat RAG (Android)
+﻿# Roadmap: InfinoVault
 
 **Created:** 2026-03-20
 **Granularity:** standard
 **Mode:** yolo
 
 All v1 requirements in `.planning/REQUIREMENTS.md` are mapped to exactly one phase.
+
+Future target: eventual Google Play Store launch (do not force Play Store work into Phase 1 unless it becomes a blocker).
 
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
@@ -23,7 +25,7 @@ Goal: Add a PDF library surface and set the app’s privacy/offline constraints 
 Requirements: PRIV-01, PRIV-02, PDF-01, PDF-02, PDF-03, UX-02
 
 Success criteria:
-1. User can import a PDF and see it in a local library list; deleting it removes it from the list.
+1. User can import a PDF and see it in a local library list; user can delete a PDF from the library or from the source/citation UI, and deletion removes the PDF plus all derived index data (chunks/embeddings).
 2. App clearly communicates “on-device” behavior and has no document-content network calls in the import flow.
 3. Corrupt/unsupported PDFs show a clear error state instead of crashing.
 4. Data lives in app-private storage (or encrypted if chosen later) and survives app restarts.
@@ -62,7 +64,7 @@ Requirements: RAG-01, RAG-02, RAG-03, ANS-01, ANS-02, ANS-03, ANS-04
 Success criteria:
 1. For a question, the app retrieves relevant chunks across all PDFs and includes them as citations in the answer.
 2. Each citation shows PDF name + page number + snippet; tapping opens a page view with the snippet highlighted.
-3. If retrieval finds no relevant evidence, assistant says so and asks a clarifying question.
+3. If retrieval finds no relevant evidence, the assistant replies exactly: "I don't know based on the provided documents."
 4. Retrieval results are deduplicated so citations aren’t noisy/repetitive.
 5. Answering latency remains interactive on a mid-range device for typical PDFs.
 
@@ -77,3 +79,4 @@ Success criteria:
 2. When compaction occurs, user sees a brief “compacting context” indicator and the conversation continues naturally.
 3. The assistant preserves important user context via summary + retrieval (not just truncation).
 4. Regression test / manual scenario demonstrates safe handling near context limits.
+

@@ -1,4 +1,4 @@
-﻿# Requirements: SmolChat RAG (Android)
+﻿# Requirements: InfinoVault
 
 **Defined:** 2026-03-20
 **Core Value:** Users can ask questions about their private PDFs and get accurate, cited answers without the data leaving the device.
@@ -14,7 +14,7 @@
 
 - [ ] **PDF-01**: User can add/import PDFs into an in-app library (multiple PDFs)
 - [ ] **PDF-02**: User can view/manage the library (list, metadata, size, last indexed)
-- [ ] **PDF-03**: User can delete a PDF from the library and all derived index data is removed
+- [ ] **PDF-03**: User can delete a PDF from the document library and from any source/citation UI; deleting removes the PDF, chunks, embeddings, and all derived index data tied to that PDF
 - [ ] **PDF-04**: App indexes across all uploaded PDFs by default (with an option to scope to a subset)
 
 ### Text Extraction + OCR
@@ -42,7 +42,7 @@
 - [ ] **ANS-01**: Assistant answers are grounded in retrieved PDF chunks (no “hallucinated” claims presented as facts)
 - [ ] **ANS-02**: Each answer includes citations that show (a) PDF name, (b) page number, and (c) a snippet used as evidence
 - [ ] **ANS-03**: User can tap a citation to view the highlighted snippet in context (at least the page and surrounding text)
-- [ ] **ANS-04**: If evidence is insufficient, assistant says so and asks a clarifying question or suggests what to search for
+- [ ] **ANS-04**: If evidence is insufficient, the assistant replies exactly: "I don't know based on the provided documents."
 
 ### Continuous Chat / Context Window Robustness
 
@@ -113,3 +113,4 @@
 ---
 *Requirements defined: 2026-03-20*
 *Last updated: 2026-03-20 after initial definition*
+

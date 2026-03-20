@@ -1,4 +1,4 @@
-﻿# SmolChat RAG (Android)
+﻿# InfinoVault
 
 ## What This Is
 
@@ -39,6 +39,7 @@ Users can ask questions about their private PDFs and get accurate, cited answers
 
 ## Constraints
 
+- **Distribution**: Future target is an eventual Google Play Store launch; do not force Play Store work into Phase 1 unless required.
 - **Privacy/Offline**: Everything must run on-device; no document content leaves the device.
 - **Citations**: Responses must include page number + snippet, and the UI should let users view the cited excerpt in context.
 - **OCR**: Must support scanned PDFs. Prefer an on-device OCR option that minimizes APK bloat; allow language packs/models to be downloaded on-device if needed.
@@ -57,3 +58,5 @@ Users can ask questions about their private PDFs and get accurate, cited answers
 
 ---
 *Last updated: 2026-03-20 after initial project initialization*
+
+

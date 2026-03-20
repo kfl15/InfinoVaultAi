@@ -1,4 +1,4 @@
-﻿# State: SmolChat RAG (Android)
+﻿# State: InfinoVault
 
 ## Project Reference
 
@@ -16,3 +16,4 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | 3 | Pending | Embeddings + indexing store |
 | 4 | Pending | Retrieval + cited answering |
 | 5 | Pending | Continuous chat context/KV fix |
+
