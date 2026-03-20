@@ -1,4 +1,4 @@
-﻿# Coding Conventions
+# Coding Conventions
 
 **Analysis Date:** 2026-03-20
 
@@ -24,7 +24,7 @@
 
 **Functions:**
 - Production code uses `camelCase` (e.g., `load`, `unload`, `getResponse` in `app/src/main/java/io/shubham0204/smollmandroid/llm/SmolLMManager.kt`).
-- Tests often use descriptive names with underscores to communicate “action_expectedResult” (e.g., `addition_isCorrect` in `app/src/test/java/io/shubham0204/smollmandroid/ExampleUnitTest.kt`, `clickAddTask_showsNewTask` in `app/src/androidTest/java/io/shubham0204/smollmandroid/TaskActivityTests.kt`).
+- Tests often use descriptive names with underscores to communicate "action_expectedResult" (e.g., `addition_isCorrect` in `app/src/test/java/io/shubham0204/smollmandroid/ExampleUnitTest.kt`, `clickAddTask_showsNewTask` in `app/src/androidTest/java/io/shubham0204/smollmandroid/TaskActivityTests.kt`).
 
 **Variables & Constants:**
 - `camelCase` for locals and properties.
@@ -53,7 +53,7 @@
 ## Import Organization
 
 **Observed Pattern:**
-- Imports are generally grouped by “platform/framework” then “project” then “third party” (e.g., `android.*` / `androidx.*` before project imports in `app/src/main/java/io/shubham0204/smollmandroid/MainActivity.kt`).
+- Imports are generally grouped by "platform/framework" then "project" then "third party" (e.g., `android.*` / `androidx.*` before project imports in `app/src/main/java/io/shubham0204/smollmandroid/MainActivity.kt`).
 - Blank lines are used occasionally but not strictly enforced between every import group.
 
 ## Error Handling
@@ -69,7 +69,7 @@
 - Uses `android.util.Log` directly (e.g., `Log.d`, `Log.e` in `app/src/main/java/io/shubham0204/smollmandroid/llm/speech2text/AudioTranscriptionService.kt`).
 
 **Conventions:**
-- Log tags are typically bracketed and include a “-Kt” suffix (e.g., `private const val LOGTAG = "[SmolLMAndroid-Kt]"` in `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/chat/ChatScreenViewModel.kt`).
+- Log tags are typically bracketed and include a "-Kt" suffix (e.g., `private const val LOGTAG = "[SmolLMAndroid-Kt]"` in `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/chat/ChatScreenViewModel.kt`).
 - A local `LOGD` lambda wrapper is used in several files to keep calls concise and consistent.
 
 ## Threading & Coroutines

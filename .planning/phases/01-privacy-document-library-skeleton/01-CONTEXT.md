@@ -1,4 +1,4 @@
-﻿# Phase 1: Privacy + Document Library Skeleton - Context
+# Phase 1: Privacy + Document Library Skeleton - Context
 
 **Gathered:** 2026-03-20
 **Status:** Ready for planning
@@ -63,17 +63,17 @@ Not in this phase: extraction/OCR/chunking/embeddings/retrieval/answering.
 **Downstream agents MUST read these before planning or implementing.**
 
 ### Phase definition
-- `.planning/ROADMAP.md` — Phase 1 boundary + success criteria
-- `.planning/REQUIREMENTS.md` — v1 requirements (notably `PDF-01..04`, `PDF-03`, `PRIV-01..02`, `UX-02`)
-- `.planning/PROJECT.md` — product definition + privacy/offline constraints
+- `.planning/ROADMAP.md` - Phase 1 boundary + success criteria
+- `.planning/REQUIREMENTS.md` - v1 requirements (notably `PDF-01..04`, `PDF-03`, `PRIV-01..02`, `UX-02`)
+- `.planning/PROJECT.md` - product definition + privacy/offline constraints
 
 ### Existing import/share patterns
-- `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/model_download/ImportModelScreen.kt` — existing `ACTION_OPEN_DOCUMENT` picker pattern + error dialog style
-- `app/src/main/AndroidManifest.xml` — existing share-to-app intent filter (currently `text/plain`) that can guide adding a PDF share intent
+- `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/model_download/ImportModelScreen.kt` - existing `ACTION_OPEN_DOCUMENT` picker pattern + error dialog style
+- `app/src/main/AndroidManifest.xml` - existing share-to-app intent filter (currently `text/plain`) that can guide adding a PDF share intent
 
 ### Codebase structure context
-- `.planning/codebase/STRUCTURE.md` — module boundaries and where to place new library screens/data
-- `.planning/codebase/CONVENTIONS.md` — Compose/Koin/Room patterns to match
+- `.planning/codebase/STRUCTURE.md` - module boundaries and where to place new library screens/data
+- `.planning/codebase/CONVENTIONS.md` - Compose/Koin/Room patterns to match
 
 </canonical_refs>
 
@@ -82,7 +82,7 @@ Not in this phase: extraction/OCR/chunking/embeddings/retrieval/answering.
 
 ### Reusable Assets
 - `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/model_download/ImportModelScreen.kt`: demonstrates a picker flow (`ACTION_OPEN_DOCUMENT`) and clean user error via `createAlertDialog`.
-- `app/src/main/java/io/shubham0204/smollmandroid/ui/components/createAlertDialog`: reusable UX pattern for “reject cleanly with a clear error”.
+- `app/src/main/java/io/shubham0204/smollmandroid/ui/components/createAlertDialog`: reusable UX pattern for "reject cleanly with a clear error".
 
 ### Established Patterns
 - Compose screens live under `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/*` with ViewModels using Koin + StateFlow.
@@ -98,14 +98,14 @@ Not in this phase: extraction/OCR/chunking/embeddings/retrieval/answering.
 ## Specific Ideas
 
 - Copy imported PDFs into app-private storage immediately, so the app works offline after import.
-- Phase 1 should not show “indexed” placeholders; only show indexing UI once real indexing exists.
+- Phase 1 should not show "indexed" placeholders; only show indexing UI once real indexing exists.
 
 </specifics>
 
 <deferred>
 ## Deferred Ideas
 
-None — discussion stayed within phase scope.
+None - discussion stayed within phase scope.
 
 </deferred>
 

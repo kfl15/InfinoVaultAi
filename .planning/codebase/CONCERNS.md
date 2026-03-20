@@ -1,4 +1,4 @@
-﻿# Codebase Concerns
+# Codebase Concerns
 
 **Analysis Date:** 2026-03-20
 
@@ -20,11 +20,11 @@
 **Model reload cycle on message edit:**
 - Issue: Editing a message deletes DB rows, unloads the model, reloads it, and re-sends the edited message.
 - Files: `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/chat/ChatScreenViewModel.kt` (comment near `// TODO: There should be no need to unload/load the model again`)
-- Why: No native “edit conversation” support; reload ensures model context matches DB.
-- Impact: Expensive and slow on-device (re-tokenization + model warmup), can feel “broken” on low-end devices.
-- Fix approach: Maintain an in-memory conversation state that can be re-fed without full unload, or implement “rebuild context” without tearing down the native model object.
+- Why: No native "edit conversation" support; reload ensures model context matches DB.
+- Impact: Expensive and slow on-device (re-tokenization + model warmup), can feel "broken" on low-end devices.
+- Fix approach: Maintain an in-memory conversation state that can be re-fed without full unload, or implement "rebuild context" without tearing down the native model object.
 
-**Backup rules are effectively “default allow”:**
+**Backup rules are effectively "default allow":**
 - Issue: `allowBackup="true"` is enabled but `backup_rules.xml`/`data_extraction_rules.xml` are template placeholders without explicit include/exclude.
 - Files: `app/src/main/AndroidManifest.xml`, `app/src/main/res/xml/backup_rules.xml`, `app/src/main/res/xml/data_extraction_rules.xml`
 - Why: Defaults left in place.
@@ -39,7 +39,7 @@
 - Files: `smollm/src/main/java/io/shubham0204/smollm/SmolLM.kt`
 - Workaround: None in code; would require release fix.
 - Root cause: Indexing `[0]` without checking array length.
-- Fix approach: Guard with `isNotEmpty()` before indexing; treat “empty” as not supported.
+- Fix approach: Guard with `isNotEmpty()` before indexing; treat "empty" as not supported.
 
 **ASR ZIP extraction can hang on `__MACOSX` entries:**
 - Symptoms: App hangs during ASR model extraction for ZIP bundles that contain `__MACOSX/*` entries (common when zipped on macOS).
@@ -54,13 +54,13 @@
 - Risk: Other apps can send large/untrusted text (`Intent.EXTRA_TEXT`) or arbitrary `task_id` extras; can cause unexpected chat creation, DB mutations, or crashes.
 - Files: `app/src/main/AndroidManifest.xml`, `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/chat/ChatActivity.kt`
 - Current mitigation: MIME type check for `ACTION_SEND` (`text/plain`).
-- Recommendations: Add strict validation/size limits; handle missing/invalid `task_id` defensively; consider moving “task shortcut” handling behind an internal-only exported component if possible.
+- Recommendations: Add strict validation/size limits; handle missing/invalid `task_id` defensively; consider moving "task shortcut" handling behind an internal-only exported component if possible.
 
 **Model & ASR downloads lack integrity verification:**
 - Risk: If a downloaded GGUF/ASR bundle is corrupted/tampered, the app may crash, misbehave, or load untrusted content.
 - Files: `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/model_download/PopularModelsList.kt`, `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/model_download/DownloadModelsViewModel.kt`, `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/manage_asr/ASRModels.kt`
 - Current mitigation: HTTPS only (no explicit checksum/signature validation found).
-- Recommendations: Add SHA-256 checksums (or signed metadata) for “known” URLs; verify imported models (size + hash) before indexing/using.
+- Recommendations: Add SHA-256 checksums (or signed metadata) for "known" URLs; verify imported models (size + hash) before indexing/using.
 
 **ASR ZIP extraction is vulnerable to Zip Slip (path traversal):**
 - Risk: A malicious ZIP can write files outside the intended destination directory (e.g., via `../` in entry names). Since bundles are downloaded from the network, this is a remote arbitrary file write within the app sandbox.
@@ -106,7 +106,7 @@
 - Why fragile: Model import copies a user-selected URI to internal storage and immediately parses it as GGUF; there is no visible error handling around the parse.
 - Files: `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/model_download/DownloadModelsViewModel.kt` (`copyModelFile`)
 - Common failures: Null `openInputStream`/partial copy; invalid/non-GGUF file; truncated files leading to parse exceptions; leftover partial files.
-- Safe modification: Validate file name/size/extension, handle null streams, wrap GGUF parsing in `try/catch`, and write atomically (temp file → rename).
+- Safe modification: Validate file name/size/extension, handle null streams, wrap GGUF parsing in `try/catch`, and write atomically (temp file -> rename).
 
 **Native build toolchain (NDK/CMake) coupling:**
 - Why fragile: Multiple modules rely on NDK 27 + CMake 3.22.1; build flags differ across modules.
@@ -137,7 +137,7 @@
 **Download integrity + resume robustness:**
 - Problem: No checksums/signatures and unclear resume/partial download handling for large model files.
 - Current workaround: Retry manually; rely on HTTPS.
-- Blocks: Safe “one-click” downloads for large models and reliable field usage.
+- Blocks: Safe "one-click" downloads for large models and reliable field usage.
 - Files: Model download screens under `app/src/main/java/io/shubham0204/smollmandroid/ui/screens/model_download/`
 - Implementation complexity: Medium (hash pipeline + UI + persisted metadata).
 

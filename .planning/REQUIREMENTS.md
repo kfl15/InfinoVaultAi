@@ -1,4 +1,4 @@
-﻿# Requirements: InfinoVault
+# Requirements: InfinoVault
 
 **Defined:** 2026-03-20
 **Core Value:** Users can ask questions about their private PDFs and get accurate, cited answers without the data leaving the device.
@@ -8,7 +8,7 @@
 ### Privacy / Offline
 
 - [ ] **PRIV-01**: All PDF processing (text extraction, OCR, indexing, retrieval, answering) runs on-device with no document content sent over the network
-- [ ] **PRIV-02**: App provides a clear “Offline / On-device” status and documents what (if anything) may use network (e.g., optional model downloads)
+- [ ] **PRIV-02**: App provides a clear "Offline / On-device" status and documents what (if anything) may use network (e.g., optional model downloads)
 
 ### PDF Library
 
@@ -39,7 +39,7 @@
 
 ### Answering + Citations
 
-- [ ] **ANS-01**: Assistant answers are grounded in retrieved PDF chunks (no “hallucinated” claims presented as facts)
+- [ ] **ANS-01**: Assistant answers are grounded in retrieved PDF chunks (no "hallucinated" claims presented as facts)
 - [ ] **ANS-02**: Each answer includes citations that show (a) PDF name, (b) page number, and (c) a snippet used as evidence
 - [ ] **ANS-03**: User can tap a citation to view the highlighted snippet in context (at least the page and surrounding text)
 - [ ] **ANS-04**: If evidence is insufficient, the assistant replies exactly: "I don't know based on the provided documents."
@@ -48,7 +48,7 @@
 
 - [ ] **CHAT-01**: Chat remains usable indefinitely; when context window is near full the app automatically compacts history (summary + keep last N turns)
 - [ ] **CHAT-02**: When a chat session is reset (due to KV cache / context overflow), the assistant continues seamlessly using the compacted history + retrieved doc chunks
-- [ ] **CHAT-03**: The app never crashes or “stops responding” due to context window/KV cache exhaustion; user sees a graceful “compacting context” status when it occurs
+- [ ] **CHAT-03**: The app never crashes or "stops responding" due to context window/KV cache exhaustion; user sees a graceful "compacting context" status when it occurs
 
 ### UX / Reliability
 
@@ -71,7 +71,7 @@
 | Feature | Reason |
 |---------|--------|
 | Cloud RAG / server storage | Conflicts with privacy-first on-device target |
-| “Source line numbers” | PDFs don’t have stable line numbers; page + snippet is the chosen citation format |
+| "Source line numbers" | PDFs don't have stable line numbers; page + snippet is the chosen citation format |
 
 ## Traceability
 
@@ -108,7 +108,7 @@
 **Coverage:**
 - v1 requirements: 26 total
 - Mapped to phases: 26
-- Unmapped: 0 ✓
+- Unmapped: 0 OK
 
 ---
 *Requirements defined: 2026-03-20*

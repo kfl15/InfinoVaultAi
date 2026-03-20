@@ -1,4 +1,4 @@
-﻿---
+---
 phase: 1
 slug: privacy-document-library-skeleton
 status: draft
@@ -7,7 +7,7 @@ wave_0_complete: false
 created: 2026-03-20
 ---
 
-# Phase 1 â€” Validation Strategy
+# Phase 1 - Validation Strategy
 
 > Per-phase validation contract for feedback sampling during execution.
 
@@ -38,17 +38,17 @@ created: 2026-03-20
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 1-01-01 | 01 | 1 | REQ-{XX} | unit | `./gradlew :app:testDebugUnitTest` | âœ… / âŒ W0 | â¬œ pending |
+| 1-01-01 | 01 | 1 | REQ-{XX} | unit | `./gradlew :app:testDebugUnitTest` | OK / X W0 | pending |
 
-*Status: â¬œ pending Â· âœ… green Â· âŒ red Â· âš ï¸ flaky*
+*Status: pending - OK green - X red - WARNING flaky*
 
 ---
 
 ## Wave 0 Requirements
 
 - [ ] `Existing infrastructure covers all phase requirements.
-- [ ] `{tests/conftest.py}` â€” shared fixtures
-- [ ] `{framework install}` â€” if no framework detected
+- [ ] `{tests/conftest.py}` - shared fixtures
+- [ ] `{framework install}` - if no framework detected
 
 *If none: "Existing infrastructure covers all phase requirements."*
 

@@ -1,8 +1,8 @@
-﻿# Phase 1 — Research: Privacy + Document Library Skeleton
+# Phase 1 - Research: Privacy + Document Library Skeleton
 
 ## Goal
 
-Plan Phase 1 implementation for InfinoVault’s local PDF library baseline:
+Plan Phase 1 implementation for InfinoVault's local PDF library baseline:
 - Import PDFs via file picker + share-to-app
 - Copy PDFs into app-private storage for offline use
 - List documents (filename, import date, page count if available) sorted newest-first
@@ -53,7 +53,7 @@ Codebase reference pattern:
 - Do not show indexing placeholders in Phase 1.
 - Deletion must be available from:
   - Library list
-  - Document details screen (future “citation/source UI” landing place)
+  - Document details screen (future "citation/source UI" landing place)
 
 ## Validation Architecture
 

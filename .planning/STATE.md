@@ -5,7 +5,7 @@ milestone_name: milestone
 status: planning
 stopped_at: Phase 1 context gathered
 last_updated: "2026-03-20T06:34:12.317Z"
-last_activity: 2026-03-20 — Phase 1 context gathered
+last_activity: 2026-03-20 - Phase 1 context gathered
 progress:
   total_phases: 5
   completed_phases: 0
@@ -14,23 +14,23 @@ progress:
   percent: 0
 ---
 
-﻿# Project State
+# Project State
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 **Core value:** Users can ask questions about their private PDFs and get accurate, cited answers without the data leaving the device.
-**Current focus:** Phase 1 — Privacy + Document Library Skeleton
+**Current focus:** Phase 1 - Privacy + Document Library Skeleton
 
 ## Current Position
 
 Phase: 1 of 5 (Privacy + Document Library Skeleton)
 Plan: 0 of ? in current phase
 Status: Ready to plan
-Last activity: 2026-03-20 — Phase 1 context gathered
+Last activity: 2026-03-20 - Phase 1 context gathered
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [..........] 0%
 
 ## Accumulated Context
 

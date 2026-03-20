@@ -1,4 +1,4 @@
-﻿# Testing Patterns
+# Testing Patterns
 
 **Analysis Date:** 2026-03-20
 

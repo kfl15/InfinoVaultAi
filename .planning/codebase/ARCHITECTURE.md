@@ -1,4 +1,4 @@
-﻿# Architecture
+# Architecture
 
 SmolChat-Android is a multi-module Android app that runs GGUF LLMs fully on-device. The `:app` module provides the Compose UI and persistence, while the `:smollm` module provides a JNI-backed inference engine built on `llama.cpp`.
 
